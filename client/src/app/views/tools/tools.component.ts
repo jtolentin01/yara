@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { ToolsService } from '../../tools.service';
+import { ToolsService } from '../../services/tools-list/tools.service';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -17,7 +17,6 @@ export class ToolsComponent implements OnInit{
   ngOnInit(): void {
     this.toolsService.getTools().subscribe(data => {
       this.tools = data;
-      console.log(`Data Result for Tools Component: ${JSON.stringify(data)}`);
     });
   }
 }

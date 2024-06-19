@@ -1,74 +1,84 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ViewContainerRef, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RouterModule } from '@angular/router';
-import { ReactiveFormsModule } from '@angular/forms'; 
-
+import { ToolsService } from '../../services/tools-list/tools.service';
+import { AsinCheckerFormComponent } from '../import-forms/asin-checker-form/asin-checker-form.component';
+import { ListingLoaderFormComponent } from '../import-forms/listing-loader-form/listing-loader-form.component';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-batch-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule,RouterModule],
+  imports: [
+    CommonModule,
+    RouterModule,
+  ],
   templateUrl: './batch-form.component.html',
   styleUrls: ['./batch-form.component.css']
 })
-export class BatchFormComponent implements OnInit {
+export class BatchFormComponent implements OnInit, AfterViewInit {
   pageTitle: string = '';
-  importForm: FormGroup;
+  tools: any = {};
+
+  @ViewChild('dynamicComponentContainer', { read: ViewContainerRef }) container!: ViewContainerRef;
+  private containerInitialized$ = new BehaviorSubject<boolean>(false);
 
   constructor(
     private route: ActivatedRoute,
-    private formBuilder: FormBuilder
+    private router: Router,
+    private toolsService: ToolsService
   ) {
-    this.importForm = this.formBuilder.group({
-      importName: ['', Validators.required],
-      productType: ['asin', Validators.required],
-      productIDs: ['', Validators.required]
-    });
+
   }
 
   ngOnInit(): void {
-    this.route.url.subscribe(segments => {
-      if (segments.length > 0) {
-        const lastSegment = segments[segments.length - 1];
-        switch (lastSegment.path) {
-          case 'add-product-v2':
-            this.pageTitle = 'Add Product V2';
-            break;
-          case 'asin-checker-v2':
-            this.pageTitle = 'ASIN Checker lite V2';
-            break;
-          case 'listing-loader-v2':
-            this.pageTitle = 'Listing Loader V2';
-            break;
-          default:
-            this.pageTitle = 'Undefined';
-        }
+    this.containerInitialized$.subscribe(initialized => {
+      if (initialized) {
+        this.route.url.subscribe(segments => {
+          if (segments.length > 0) {
+            const lastSegment = segments[segments.length - 1];
+            this.handleRouteChange(lastSegment.path);
+          } else {
+            this.router.navigate(['/tools']);
+          }
+        });
       }
+    });
+
+    this.toolsService.getTools().subscribe(data => {
+      this.tools = data;
     });
   }
 
-  submitForm() {
-    if (this.importForm.valid) {
-      const formData = this.importForm.value;
-  
-      const productIDsArray = formData.productIDs.split('\n').filter((id: string) => id.trim() !== '');
-  
-      formData.productIDs = productIDsArray;
+  ngAfterViewInit(): void {
+    setTimeout(() => this.containerInitialized$.next(true), 0);
+  }
 
-      console.log(formData);
-
-      this.importForm.reset({
-        importName: '',
-        productType: 'asin',
-        productIDs: ''
-      });
-    } else {
-      console.log('Form is invalid');
+  handleRouteChange(path: string): void {
+    switch (path) {
+      case 'asin-checker-v2':
+        this.pageTitle = 'ASIN Checker lite V2';
+        this.loadComponent(AsinCheckerFormComponent);
+        break;
+      case 'listing-loader-v2':
+        this.pageTitle = 'Listing Loader V2';
+        this.loadComponent(ListingLoaderFormComponent);
+        break;
+      default:
+        this.pageTitle = 'Undefined';
+        this.router.navigate(['/tools']);
     }
   }
+
+  loadComponent(component: any) {
+    if (this.container) {
+      this.container.clear();
+      this.container.createComponent(component);
+    } else {
+      console.error('Container is not initialized');
+    }
+  }
+
   
-
-
 }

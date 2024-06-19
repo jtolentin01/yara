@@ -43,10 +43,10 @@
   </div>
 
   <div class="main-content flex-1 flex flex-col bg-[#ebe9e9]" [ngClass]="{'dark': isDarkMode} ">
-    <div class="header bg-white shadow p-4 flex items-center justify-between">
-      <div class="text-2xl font-bold">Listings Alternative</div>
+    <div class="header bg-white shadow p-1.5 flex items-center justify-between">
+      <div class="text-xl font-bold ml-2">Yara</div>
       <div class="flex flex-row justify-center items-center space-x-3">
-        <p>Welcome User!</p>
+        <p class="text-sm">Welcome {{user.firstName}}!</p>
         {{tools.results}}
         <button (click)="toggleDarkMode()"
           class="bg-gray-200 p-2 rounded hover:bg-gray-300 dark:bg-gray-700 dark:text-white">
