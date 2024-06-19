@@ -1,6 +1,6 @@
 const router = require('express').Router();
-const testController = require('../controllers/test.js');
+const {newBatch} = require('../controllers/batchController.js');
 
-router.post('/new', testController.testController);
+router.post('/new', newBatch);
 
 module.exports = router;

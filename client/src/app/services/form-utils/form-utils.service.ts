@@ -40,7 +40,7 @@ export class FormUtilsService {
       }
 
       const additionalData = {
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
 
       const headers = {

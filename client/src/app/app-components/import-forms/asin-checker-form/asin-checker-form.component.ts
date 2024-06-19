@@ -17,7 +17,8 @@ export class AsinCheckerFormComponent {
     this.importForm = this.formUtilsService.initializeForm([
       { controlName: 'importName', initialValue: '', validators: [Validators.required] },
       { controlName: 'productType', initialValue: 'asin', validators: [Validators.required] },
-      { controlName: 'productIDs', initialValue: '', validators: [Validators.required] }
+      { controlName: 'productIDs', initialValue: '', validators: [Validators.required] },
+      { controlName: 'tool', initialValue: 'asin-checker' }
     ]);
   }
 

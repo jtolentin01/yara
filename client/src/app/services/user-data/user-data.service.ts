@@ -5,7 +5,7 @@ import * as CryptoJS from 'crypto-js';
   providedIn: 'root'
 })
 export class UserDataService {
-  private secretKey = 'zAzze352DfszcsGs35zx'; // Replace with your own secret key
+  private secretKey = 'zAzze352DfszcsGs35zx'; 
 
   constructor() { }
 
