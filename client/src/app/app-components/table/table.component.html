@@ -1,0 +1,68 @@
+<div class="w-full h-auto">
+    <div class="w-full mx-auto bg-white rounded-lg shadow overflow-hidden">
+        <div class="p-4 flex items-center justify-between">
+            <div class="flex space-x-4">
+                <input type="text" class="p-2 border rounded-md" placeholder="Search..." [(ngModel)]="searchTerm"
+                    (input)="applySearch()">
+            </div>
+            <div class="flex space-x-4">
+                <button class="bg-gray-200 p-2 rounded hover:bg-gray-300">Select Dates</button>
+                <button class="bg-gray-200 p-2 rounded hover:bg-gray-300">Sort</button>
+                <button class="bg-gray-200 p-2 rounded hover:bg-gray-300">Group</button>
+            </div>
+        </div>
+
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <input type="checkbox"
+                            class="form-checkbox h-4 w-4 text-indigo-600 transition duration-150 ease-in-out"
+                            (change)="toggleAllCheckboxes($event)">
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                        (click)="sortTable('dateImported')">
+                        Date Imported
+                        <span *ngIf="sortColumn === 'dateImported'">
+                            {{ sortDirection === 'asc' ? '↑' : '↓' }}
+                        </span>
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                        (click)="sortTable('dateUpdated')">
+                        Date Updated
+                        <span *ngIf="sortColumn === 'dateUpdated'">
+                            {{ sortDirection === 'asc' ? '↑' : '↓' }}
+                        </span>
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Import By
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Batch ID
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Import
+                        Name & Tool</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                <tr *ngFor="let row of tableData; let i = index"
+                    [class]="i % 2 === 0 ? 'bg-gray-100 hover:bg-gray-200' : 'bg-white hover:bg-gray-100'">
+                    <td class="px-6 py-4 whitespace-no-wrap">
+                        <input type="checkbox"
+                            class="form-checkbox h-4 w-4 text-indigo-600 transition duration-150 ease-in-out"
+                            [(ngModel)]="row.selected">
+                    </td>
+                    <td class="px-6 py-4 whitespace-no-wrap text-sm font-medium text-gray-900">{{row.dateImported}}</td>
+                    <td class="px-6 py-4 whitespace-no-wrap text-sm text-gray-500">{{row.dateUpdated}}</td>
+                    <td class="px-6 py-4 whitespace-no-wrap text-sm text-gray-500">{{row.importBy}}</td>
+                    <td class="px-6 py-4 whitespace-no-wrap text-sm text-gray-500">{{row.batchId}}</td>
+                    <td class="px-6 py-4 whitespace-no-wrap text-sm text-gray-500">{{row.importNameTool}}</td>
+                    <td class="px-6 py-4 whitespace-no-wrap text-sm text-gray-500">{{row.status}}</td>
+                    <td class="px-6 py-4 whitespace-no-wrap text-sm text-gray-500"><a href="#">Download</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

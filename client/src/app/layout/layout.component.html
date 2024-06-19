@@ -1,0 +1,74 @@
+<div class="wrapper flex min-h-screen" [ngClass]="{'dark': isDarkMode}">
+  <div class="sidebar w-20 bg-gray-800 text-white flex-shrink-0 p-4 flex flex-col items-center justify-between ">
+    <ul class="space-y-5 mt-5">
+      <li routerLink="/dashboard">
+        <div class="text-lg font-bold mb-4 flex justify-center hover:cursor-pointer">Si</div>
+      </li>
+      <li class="py-2 px-4 hover:bg-gray-700 rounded" routerLink="/dashboard">
+        <a>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+            stroke="currentColor" class="size-6">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
+          </svg>
+        </a>
+      </li>
+      <li class="py-2 px-4 hover:bg-gray-700 rounded" routerLink="/tools">
+        <a>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+            stroke="currentColor" class="size-6">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 1 1-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 0 0 4.486-6.336l-3.276 3.277a3.004 3.004 0 0 1-2.25-2.25l3.276-3.276a4.5 4.5 0 0 0-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437 1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008Z" />
+          </svg>
+        </a>
+      </li>
+      <li class="py-2 px-4 hover:bg-gray-700 rounded" routerLink="/downloads">
+        <a>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+            stroke="currentColor" class="size-6">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M3 4.5h14.25M3 9h9.75M3 13.5h9.75m4.5-4.5v12m0 0-3.75-3.75M17.25 21 21 17.25" />
+          </svg>
+        </a>
+      </li>
+    </ul>
+    <div (click)="test('Logout Successfully!')" class="p-2 hover:bg-gray-700 rounded cursor-pointer">
+      <a routerLink="/another-icon-link">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+          class="size-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5.636 5.636a9 9 0 1 0 12.728 0M12 3v9" />
+        </svg>
+      </a>
+    </div>
+  </div>
+
+  <div class="main-content flex-1 flex flex-col bg-[#ebe9e9]" [ngClass]="{'dark': isDarkMode} ">
+    <div class="header bg-white shadow p-4 flex items-center justify-between">
+      <div class="text-2xl font-bold">Listings Alternative</div>
+      <div class="flex flex-row justify-center items-center space-x-3">
+        <p>Welcome User!</p>
+        {{tools.results}}
+        <button (click)="toggleDarkMode()"
+          class="bg-gray-200 p-2 rounded hover:bg-gray-300 dark:bg-gray-700 dark:text-white">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+            stroke="currentColor" class="size-6">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="mt-2 ml-4">
+      <app-breadcrumbs></app-breadcrumbs>
+    </div>
+
+    <main class="flex-grow p-4 bg-[#ebe9e9]">
+      <router-outlet></router-outlet>
+    </main>
+
+    <div class="footer bg-white shadow p-2 text-center">
+      <div class="text-gray-600">© Listing Tools Alternative by CPI Devs 2024. All rights reserved</div>
+    </div>
+  </div>
+</div>

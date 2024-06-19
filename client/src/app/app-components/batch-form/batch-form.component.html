@@ -1,0 +1,63 @@
+<div class="flex flex-col md:flex-row p-4 items-stretch justify-center h-full rounded-2xl">
+    <div class="md:w-72 md:mr-0 mb-4 md:mb-0 w-full">
+        <nav class="bg-white h-full px-4 py-2">
+            <ul class="h-full flex flex-col">
+                <li routerLink="/tools/add-product-v2" class="text-gray-500 hover:text-blue-700 hover:cursor-pointer">
+                    Add Product V2</li>
+                <li class="border-t border-gray-300 my-2"></li>
+                <li routerLink="/tools/asin-checker-v2" class="text-gray-500 hover:text-blue-700 hover:cursor-pointer">
+                    ASIN Checker lite V2</li>
+                <li class="border-t border-gray-300 my-2"></li>
+                <li routerLink="/tools/listing-loader-v2"
+                    class="text-gray-500 hover:text-blue-700 hover:cursor-pointer">Listing Loader V2</li>
+                    
+            </ul>
+        </nav>
+    </div>
+
+    <form [formGroup]="importForm" class="bg-white rounded px-8 pt-6 pb-8 mb-0 md:w-full" (ngSubmit)="submitForm()">
+        <div class="w-full font-bold py-5">
+            <h1 class="text-[1.5rem]">{{ pageTitle }}</h1>
+        </div>
+        <div>
+            <hr class="mb-3">
+        </div>
+        <div>
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="importName">
+                    Import Name
+                </label>
+                <input
+                    formControlName="importName"
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    id="importName" type="text" placeholder="Enter Import Name">
+            </div>
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="productType">
+                    Select Product ID Type
+                </label>
+                <select id="productType" formControlName="productType" class="w-full bg-gray-100 p-2 rounded">
+                    <option value="asin">ASIN</option>
+                    <option value="upc">UPC</option>
+                </select>
+            </div>
+            <div class="mb-6">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="productIDs">
+                    Product IDs
+                </label>
+                <textarea
+                    formControlName="productIDs"
+                    class="shadow appearance-none border rounded w-full h-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    id="productIDs"
+                    placeholder="Enter Product IDs (ASIN, UPC, or EAN) by line. Maximum of 5,000 Lines"></textarea>
+            </div>
+            <div class="flex items-center justify-center md:justify-end">
+                <button
+                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full md:w-full"
+                    type="submit">
+                    Submit
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
