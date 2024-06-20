@@ -24,6 +24,14 @@ export class LayoutComponent implements OnInit, OnDestroy {
   ) {}
 
   public user = this.userDataService.getUserDataFromCookies();
+  public userMonitoringData = {
+    reqType: 1,
+    reqBody: {
+      userId: this.user.userId,
+      userEmail: this.user.email,
+      active: true
+    }
+  }
 
   ngOnInit(): void {
     this.saveUserData();
@@ -36,10 +44,8 @@ export class LayoutComponent implements OnInit, OnDestroy {
     }
     this.websocketService.connectSocket();
 
-    // Example of sending a message
-    this.websocketService.sendMessage("Test from client");
+    this.websocketService.sendMessage(this.userMonitoringData);
 
-    // Example of receiving messages
     this.websocketService.receiveMessages().subscribe((message) => {
       console.log("Received from server:", message);
     });
@@ -62,6 +68,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
   saveUserData(): void {
     const userData = {
+      userId: "523553",
       firstName: "John",
       lastName: "Doe",
       email: "john.doe@example.com",
