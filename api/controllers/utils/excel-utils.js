@@ -22,4 +22,4 @@ const createExcelFile = async (headers, data) => {
     }
 };
 
-module.exports = createExcelFile;
+module.exports = {createExcelFile};

@@ -25,6 +25,8 @@ const generateLWAaccessToken = async () => {
     }
 };
 
+const amzBaseUrl = "https://sellingpartnerapi-na.amazon.com";
+
 const getMarketPlaceIDs = (marketplaces) => {
     switch (marketplaces) {
         case "US":
@@ -42,4 +44,4 @@ const getMarketPlaceIDs = (marketplaces) => {
 
 
 
-module.exports = {generateLWAaccessToken, getMarketPlaceIDs}
+module.exports = {generateLWAaccessToken, getMarketPlaceIDs,amzBaseUrl}

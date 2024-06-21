@@ -28,4 +28,4 @@ const uploadFileToS3 = async (s3Folder, file, fileName) => {
 
 }
 
-module.exports = uploadFileToS3;
+module.exports = {uploadFileToS3};

@@ -1,18 +1,21 @@
-const { generateLWAaccessToken, getMarketPlaceIDs } = require('../middlewares/amz-api');
-const uploadFileToS3 = require('../middlewares/aws');
-const createExcelFile = require('../utils/excel-utils');
+const { generateLWAaccessToken, getMarketPlaceIDs,amzBaseUrl } = require('../middlewares/amz-api');
+const { uploadFileToS3 } = require('../middlewares/aws');
+const { createExcelFile } = require('../utils/excel-utils');
+const { extractUniqueValues, chunkArray } = require('../utils/array-utils');
+const { delay } = require('../utils/misc-utils');
 
 const asinCheckerLiteInit = async (req, res) => {
+
     const { productType, productIDs } = req.body;
-
     try {
-        const amazonApiToken = await generateLWAaccessToken();
 
-        const asinCheckerLiteExec = (amazonApiToken, productID, maxRetries = 3) => {
+        const amazonApiToken = await generateLWAaccessToken();
+        const asinCheckerLiteExec = async (amazonApiToken, productIDs, maxRetries = 3, delayMs = 1000) => {
             return new Promise(async (resolve, reject) => {
-                const baseUrl = 'https://sellingpartnerapi-na.amazon.com/catalog/2022-04-01/items';
+                const identifiers = productIDs.join(',');
+                const baseUrl = `${amzBaseUrl}/catalog/2022-04-01/items`;
                 const queryStringArr = [
-                    `identifiers=${productID}`,
+                    `identifiers=${identifiers}`,
                     `identifiersType=${productType}`,
                     `marketplaceIds=${getMarketPlaceIDs('US')}`,
                     `includedData=identifiers,attributes,summaries,relationships,productTypes,salesRanks`,
@@ -24,7 +27,6 @@ const asinCheckerLiteInit = async (req, res) => {
                     method: 'get',
                     headers: { 'x-amz-access-token': amazonApiToken }
                 };
-
                 const fetchData = async (retryCount) => {
                     try {
                         const response = await fetch(url, options);
@@ -32,9 +34,11 @@ const asinCheckerLiteInit = async (req, res) => {
                             throw new Error(`HTTP error! status: ${response.status}`);
                         }
                         const data = await response.json();
-                        resolve(data);
+                        resolve([data]);
+                        await delay(delayMs);
                     } catch (error) {
                         if (retryCount > 0) {
+                            await delay(delayMs);
                             fetchData(retryCount - 1);
                         } else {
                             reject(error);
@@ -46,27 +50,28 @@ const asinCheckerLiteInit = async (req, res) => {
             });
         };
 
-        const results = await Promise.all(productIDs.map(productID => asinCheckerLiteExec(amazonApiToken, productID)));
-
         const extractResult = (data) => {
             const asinArray = [];
-
             data.forEach((entry) => {
-                if (entry.items && entry.items[0] && entry.items[0].asin) {
-                    const parentAsin = entry.items[0].relationships[0]?.relationships[0]?.parentAsins ? entry.items[0].relationships[0]?.relationships[0]?.parentAsins[0] : entry.items[0].relationships[0]?.relationships[0]?.childAsins ? 'n/a' : 'n/a'
-                    asinArray.push({
-                        asin: entry.items[0].asin,
-                        link: `https://sellercentral.amazon.com/abis/listing/syh?asin=${entry.items[0].asin}&ref_=xx_catadd_dnav_xx#offer`,
-                        title: entry.items[0].summaries[0].itemName.replace(/\\"/g, '"'),
-                        brand: entry.items[0].summaries[0].brand,
-                        gender: entry.items[0].attributes.target_gender[0].value || entry.items[0].attributes.department[0].value || 'n/a',
-                        color: entry.items[0].summaries[0].color,
-                        size: entry.items[0].summaries[0].size,
-                        productTypes: entry.items[0].productTypes[0].productType,
-                        salesRanks: entry.items[0].salesRanks[0].classificationRanks[0]?.rank,
-                        salesRanks2: entry.items[0].salesRanks[0].displayGroupRanks[0]?.rank,
-                        parentasin: entry.items[0].relationships[0]?.relationships[0]?.parentAsins ? entry.items[0].relationships[0]?.relationships[0]?.parentAsins[0] : entry.items[0].relationships[0]?.relationships[0]?.childAsins ? 'n/a' : 'n/a',
-                        standalone: parentAsin === 'n/a' ? 'Yes' : 'No'
+                if (Array.isArray(entry.items)) {
+                    entry.items.forEach((item) => {
+                        if (item.asin) {
+                            const parentAsin = (item.relationships?.[0]?.relationships?.[0]?.parentAsins?.[0]) || 'n/a';
+                            asinArray.push({
+                                asin: item.asin,
+                                link: `https://sellercentral.amazon.com/abis/listing/syh?asin=${item.asin}&ref_=xx_catadd_dnav_xx#offer`,
+                                title: (item.summaries?.[0]?.itemName || '').replace(/\\"/g, '"'),
+                                brand: item.summaries?.[0]?.brand || 'n/a',
+                                gender: (item.attributes?.target_gender?.[0]?.value || item.attributes?.department?.[0]?.value || 'n/a'),
+                                color: item.summaries?.[0]?.color || 'n/a',
+                                size: item.summaries?.[0]?.size || 'n/a',
+                                productTypes: item.productTypes?.[0]?.productType || 'n/a',
+                                salesRanks: item.salesRanks?.[0]?.classificationRanks?.[0]?.rank || 'n/a',
+                                salesRanks2: item.salesRanks?.[0]?.displayGroupRanks?.[0]?.rank || 'n/a',
+                                parentasin: parentAsin,
+                                standalone: (parentAsin === 'n/a') ? 'Yes' : 'No'
+                            });
+                        }
                     });
                 }
             });
@@ -74,24 +79,27 @@ const asinCheckerLiteInit = async (req, res) => {
             return asinArray;
         };
 
+        const results = [];
+        const parentResultArr = [];
+        const productIDChunks = chunkArray(productIDs, 20);
+
+        for (const chunk of productIDChunks) {
+            const chunkResult = await asinCheckerLiteExec(amazonApiToken, chunk);
+            results.push(...chunkResult);
+            await delay(800)
+        }
         const initialResult = extractResult(results);
-        const extractUniqueParentAsin = (data) => {
-            const uniqueParentAsins = [];
+        let uniqueParentAsins = extractUniqueValues(initialResult, 'parentasin');
 
-            data.forEach((entry) => {
-                const parentAsin = entry.parentasin;
+        const chunkUniqueParentAsins = chunkArray(uniqueParentAsins, 20);
 
-                if (parentAsin && !uniqueParentAsins.includes(parentAsin)) {
-                    uniqueParentAsins.push(parentAsin);
-                }
-            });
+        for (const chunk of chunkUniqueParentAsins) {
+            const chunkResult = await asinCheckerLiteExec(amazonApiToken, chunk);
+            parentResultArr.push(...chunkResult);
+            await delay(800)
+        }
 
-            return uniqueParentAsins;
-        };
-
-        const uniqueParentAsins = extractUniqueParentAsin(extractResult(results));
-        const parentAsinResults = await Promise.all(uniqueParentAsins.map(parentAsin => asinCheckerLiteExec(amazonApiToken, parentAsin)));
-        const parentResult = extractResult(parentAsinResults);
+        const parentResult = extractResult(parentResultArr);
 
         const mergedResults = initialResult.map(item => {
             if (item.parentasin && item.standalone === 'No') {
@@ -126,13 +134,14 @@ const asinCheckerLiteInit = async (req, res) => {
             { header: "Parent Brand", key: "parentBrand", width: 10 },
             { header: "Parent Gender", key: "parentGender", width: 10 },
             { header: "Parent Product Type", key: "parentProductType", width: 10 },
-
-
         ];
+
         let renderFile = await createExcelFile(headers, mergedResults);
+        
         await uploadFileToS3('downloads', renderFile, 'test-result.xlsx');
 
         res.status(200).json(mergedResults);
+
     } catch (error) {
         console.error('Error:', error);
         res.status(500).json({ error: error.message });

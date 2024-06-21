@@ -18,7 +18,8 @@ export class AsinCheckerFormComponent {
       { controlName: 'importName', initialValue: '', validators: [Validators.required] },
       { controlName: 'productType', initialValue: 'asin', validators: [Validators.required] },
       { controlName: 'productIDs', initialValue: '', validators: [Validators.required] },
-      { controlName: 'tool', initialValue: 'asin-checker-v2' }
+      { controlName: 'tool', initialValue: 'asin-checker-v2' },
+      { controlName: 'status', initialValue: 1 },
     ]);
   }
 
