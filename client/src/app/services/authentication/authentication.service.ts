@@ -5,12 +5,13 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class ToolsService {
-  private apiUrl = '/api/v1/tools/list/all';
+export class AuthenticationService {
+  private apiUrl = '/api/v1/auth/login';
 
   constructor(private http: HttpClient) {}
 
-  getTools(): Observable<any> {
-    return this.http.get<any>(this.apiUrl);
+  submitFormData(formData: any): Observable<any> {
+    const body = { ...formData };
+    return this.http.post<any>(this.apiUrl, body);
   }
 }

@@ -1,6 +1,6 @@
 const router = require('express').Router();
-const toolController = require('../controllers/toolsController.js');
+const {getListOfTools} = require('../controllers/indexController.js');
 
-router.get('/all', toolController.getAllTools);
+router.get('/list/all', getListOfTools);
 
 module.exports = router;

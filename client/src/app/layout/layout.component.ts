@@ -27,21 +27,19 @@ export class LayoutComponent implements OnInit, OnDestroy {
   public userMonitoringData = {
     reqType: 1,
     reqBody: {
-      userId: this.user.userId,
+      userId: this.user.id,
       userEmail: this.user.email,
       active: true
     }
   }
 
   ngOnInit(): void {
-    this.saveUserData();
-    console.log("User Data from Cookies:", this.user);
-
     this.userDataCookieExpired = this.userDataService.isUserDataCookieExpired();
     if (this.userDataCookieExpired == true) {
       this.userDataService.removeUserDataFromCookies();
       this.userDataService.removeUserDataFromLocalStorage();
     }
+
     this.websocketService.connectSocket();
 
     this.websocketService.sendMessage(this.userMonitoringData);
@@ -51,33 +49,24 @@ export class LayoutComponent implements OnInit, OnDestroy {
     });
   }
 
+  logoutExec(): void {
+    this.userDataService.removeUserDataFromCookies();
+    localStorage.setItem('user', this.user.email);
+    localStorage.setItem('expired', 'true');
+    window.location.reload();
+  }
+
   ngOnDestroy() {
     this.websocketService.disconnectSocket();
   }
 
-  // Initializes socket connection
   initializeSocketConnection() {
     this.websocketService.connectSocket();
   }
 
 
-  // Disconnects socket connection
   disconnectSocket() {
     this.websocketService.disconnectSocket();
-  }
-
-  saveUserData(): void {
-    const userData = {
-      userId: "523553",
-      firstName: "John",
-      lastName: "Doe",
-      email: "john.doe@example.com",
-      accessLevel: 1,
-      authorization: "235SDgsDZdfsE43fsSZfsdf25sdZ",
-    };
-
-    this.userDataService.setUserDataInLocalStorage(userData);
-    this.userDataService.setUserDataInCookies(userData);
   }
 
   test = (params: any) => {

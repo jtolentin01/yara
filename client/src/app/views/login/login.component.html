@@ -1,0 +1,97 @@
+<div class="bg-gray-100 flex items-center justify-center min-h-screen">
+  <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-sm">
+    <div class="flex justify-center mb-6">
+      <!-- Logo -->
+      <div class="w-12 h-12 bg-black rounded-full"></div>
+    </div>
+    <form [formGroup]="loginform" (ngSubmit)="login()">
+      <div class="mb-4">
+        <label for="email" class="block text-gray-700 text-sm font-bold mb-2"
+          >Email</label
+        >
+        <input
+          formControlName="email"
+          type="email"
+          id="email"
+          name="email"
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          value="aaron@column.com"
+        />
+      </div>
+      <div class="mb-4">
+        <label for="password" class="block text-gray-700 text-sm font-bold mb-2"
+          >Password</label
+        >
+        <div class="relative">
+          <input
+            formControlName="password"
+            [type]="passwordVisible ? 'text' : 'password'"
+            id="password"
+            name="password"
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          />
+          <span
+            (click)="showPassword()"
+            class="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
+          >
+            <svg
+              *ngIf="!passwordVisible"
+              class="h-5 w-5 text-gray-500"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+              ></path>
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-.274 1.145-.741 2.213-1.378 3.154M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+              ></path>
+            </svg>
+            <svg
+              *ngIf="passwordVisible"
+              class="h-5 w-5 text-gray-500"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13.875 18.825A10.05 10.05 0 0112 19c-4.477 0-8.268-2.943-9.542-7 .274-1.145.741-2.213 1.378-3.154m14.97 0A10.05 10.05 0 0112 5c-.728 0-1.438.077-2.125.225M12 12a3 3 0 01-3-3M12 12a3 3 0 003 3m-6 0a3 3 0 010-6m0 6l12 12"
+              ></path>
+            </svg>
+          </span>
+        </div>
+      </div>
+      <div class="mb-6 text-center">
+        <a href="#" class="text-sm text-blue-500 hover:text-blue-700"
+          >Forgot your password?</a
+        >
+      </div>
+      <div class="flex items-center justify-between">
+        <button
+          type="submit"
+          class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+        >
+          Sign in
+        </button>
+      </div>
+    </form>
+    <div class="text-center mt-4">
+      <p class="text-gray-600 text-sm">Don’t have a Yara account?</p>
+      <a href="#" class="text-blue-500 hover:text-blue-700"
+        >Create new account</a
+      >
+    </div>
+  </div>
+</div>

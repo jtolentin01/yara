@@ -1,6 +1,6 @@
-const getAllTools = async (req, res, next) => {
+const getListOfTools = async (req, res, next) => {
     try {
-        let result = [
+        let tools = [
             {
                 name: "ASIN Checker V2",
                 subname: "asin-checker-v2",
@@ -13,11 +13,12 @@ const getAllTools = async (req, res, next) => {
                 description: "ipsum dolor sit amet consectetur adipisicing elit.",
                 active: true,
             },
+            
         ];
-        res.status(200).json({ result });
+        res.status(200).json({ tools });
     } catch (error) {
         next(error);
     }
 }
 
-module.exports = { getAllTools };
+module.exports = { getListOfTools };

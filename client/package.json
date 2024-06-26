@@ -20,6 +20,8 @@
     "@angular/platform-browser-dynamic": "^18.0.0",
     "@angular/router": "^18.0.0",
     "crypto-js": "^4.2.0",
+    "ng-angular-popup": "^0.6.2",
+    "ngx-cookie-service": "^18.0.0",
     "ngx-socket-io": "^4.7.0",
     "rxjs": "~7.8.0",
     "socket.io-client": "^4.7.5",

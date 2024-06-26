@@ -32,7 +32,7 @@
         </a>
       </li>
     </ul>
-    <div (click)="test('Logout Successfully!')" class="p-2 hover:bg-gray-700 rounded cursor-pointer">
+    <div (click)="logoutExec()" class="p-2 hover:bg-gray-700 rounded cursor-pointer">
       <a routerLink="/another-icon-link">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
           class="size-6">
@@ -46,7 +46,7 @@
     <div class="header bg-white shadow p-1.5 flex items-center justify-between">
       <div class="text-xl font-bold ml-2">Yara</div>
       <div class="flex flex-row justify-center items-center space-x-3">
-        <p class="text-sm">Welcome {{user.firstName}}!</p>
+        <p class="text-sm">Welcome {{user.firstname}}!</p>
         {{tools.results}}
         <button (click)="toggleDarkMode()"
           class="bg-gray-200 p-2 rounded hover:bg-gray-300 dark:bg-gray-700 dark:text-white">

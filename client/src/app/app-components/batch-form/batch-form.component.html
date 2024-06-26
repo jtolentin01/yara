@@ -6,7 +6,7 @@
             <div class="md:w-72 w-full">
                 <nav class="bg-white h-full px-4 py-2">
                     <ul class=" flex flex-col">
-                        <li *ngFor="let tool of tools.result" routerLink="/tools/{{tool.subname}}"
+                        <li *ngFor="let tool of tools.tools" routerLink="/tools/{{tool.subname}}"
                             class="text-gray-500 hover:text-blue-700 hover:cursor-pointer">
                             {{tool.name}}
                             <div class="border-t border-gray-300 my-2"></div>

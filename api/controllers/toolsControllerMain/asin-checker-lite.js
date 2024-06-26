@@ -3,12 +3,11 @@ const { uploadFileToS3 } = require('../middlewares/aws');
 const { createExcelFile } = require('../utils/excel-utils');
 const { extractUniqueValues, chunkArray } = require('../utils/array-utils');
 const { delay } = require('../utils/misc-utils');
+const {updateBatchStatus, updateBatchProgress} = require('../middlewares/msc');
 
-const asinCheckerLiteInit = async (req, res) => {
-
+const asinCheckerLiteInit = async (req, res, next, batchId) => {
     const { productType, productIDs } = req.body;
     try {
-
         const amazonApiToken = await generateLWAaccessToken();
         const asinCheckerLiteExec = async (amazonApiToken, productIDs, maxRetries = 3, delayMs = 1000) => {
             return new Promise(async (resolve, reject) => {
@@ -83,20 +82,31 @@ const asinCheckerLiteInit = async (req, res) => {
         const parentResultArr = [];
         const productIDChunks = chunkArray(productIDs, 20);
 
-        for (const chunk of productIDChunks) {
+        for (let i = 0; i < productIDChunks.length; i++) {
+            const chunk = productIDChunks[i];
             const chunkResult = await asinCheckerLiteExec(amazonApiToken, chunk);
             results.push(...chunkResult);
-            await delay(800)
+            await delay(800);
+
+            // Update progress after processing each chunk
+            const progress = Math.round((i + 1) / productIDChunks.length * 100);
+            await updateBatchProgress(batchId, progress);
         }
+
         const initialResult = extractResult(results);
         let uniqueParentAsins = extractUniqueValues(initialResult, 'parentasin');
 
         const chunkUniqueParentAsins = chunkArray(uniqueParentAsins, 20);
 
-        for (const chunk of chunkUniqueParentAsins) {
+        for (let i = 0; i < chunkUniqueParentAsins.length; i++) {
+            const chunk = chunkUniqueParentAsins[i];
             const chunkResult = await asinCheckerLiteExec(amazonApiToken, chunk);
             parentResultArr.push(...chunkResult);
-            await delay(800)
+            await delay(800);
+
+            // Update progress after processing each parent chunk
+            const progress = Math.round((i + 1) / chunkUniqueParentAsins.length * 100);
+            await updateBatchProgress(batchId, progress);
         }
 
         const parentResult = extractResult(parentResultArr);
@@ -137,12 +147,13 @@ const asinCheckerLiteInit = async (req, res) => {
         ];
 
         let renderFile = await createExcelFile(headers, mergedResults);
-        
-        await uploadFileToS3('downloads', renderFile, 'test-result.xlsx');
 
+        await uploadFileToS3('downloads', renderFile, `${batchId}.xlsx`);
+        await updateBatchStatus(batchId, 3);
         res.status(200).json(mergedResults);
 
     } catch (error) {
+        await updateBatchStatus(batchId, 2);
         console.error('Error:', error);
         res.status(500).json({ error: error.message });
     }
