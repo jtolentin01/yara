@@ -6,6 +6,7 @@ const { Server } = require('socket.io');
 const routes = require('./api/routes/index');
 const models = require('./api/models/index');
 const wsOnInit = require('./api/controllers/ws/index');
+const wsBatchInit = require('./api/controllers/ws/ws_batch');
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -31,23 +32,21 @@ app.use(cors());
 routes.initRoutes({ app });
 models.connectDB();
 
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.resolve(__dirname, './client/build')));
-  app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, './client/build', 'index.html'));
-  });
-}
-
 io.on('connection', async (socket) => {
   console.log('a user connected');
 
   socket.on('message', async (data) => {
-
-    let ws = await wsOnInit(data);
+    let ws = await wsOnInit(data, io);
+    
     console.log('Received message:', ws);
-    socket.emit('message', `Server Response: ${ws}`);
-
+    socket.emit('message', ws);
   });
+
+  try {
+    await wsBatchInit(io); // Pass io here
+  } catch (error) {
+    console.error('Error initializing wsBatchInit:', error);
+  }
 
   socket.on('disconnect', () => {
     console.log('Client disconnected');

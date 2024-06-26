@@ -8,7 +8,7 @@ import {
 import {
   __spreadProps,
   __spreadValues
-} from "./chunk-ZXKWGXJ5.js";
+} from "./chunk-B2KS57BG.js";
 
 // node_modules/@angular/core/fesm2022/primitives/signals.mjs
 function defaultEquals(a, b) {
@@ -24088,4 +24088,4 @@ export {
    * found in the LICENSE file at https://angular.io/license
    *)
 */
-//# sourceMappingURL=chunk-4OF63RWJ.js.map
+//# sourceMappingURL=chunk-CBYQUYDN.js.map

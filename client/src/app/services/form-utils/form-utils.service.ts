@@ -63,6 +63,7 @@ export class FormUtilsService {
       );
     } else {
       console.log('Form is invalid');
+      alert('Form is invalid');
     }
   }
 }

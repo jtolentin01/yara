@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from "@angular/core";
 import { TableComponent } from '../../app-components/table/table.component';
 
 @Component({
@@ -9,5 +9,6 @@ import { TableComponent } from '../../app-components/table/table.component';
   styleUrl: './downloads.component.css'
 })
 export class DownloadsComponent {
+
 
 }

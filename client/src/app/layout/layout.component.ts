@@ -40,13 +40,13 @@ export class LayoutComponent implements OnInit, OnDestroy {
       this.userDataService.removeUserDataFromLocalStorage();
     }
 
-    this.websocketService.connectSocket();
+    // this.websocketService.connectSocket();
 
-    this.websocketService.sendMessage(this.userMonitoringData);
+    // this.websocketService.sendMessage(this.userMonitoringData);
 
-    this.websocketService.receiveMessages().subscribe((message) => {
-      console.log("Received from server:", message);
-    });
+    // this.websocketService.receiveMessages().subscribe((message) => {
+    //   console.log("Received from server:", message);
+    // });
   }
 
   logoutExec(): void {
