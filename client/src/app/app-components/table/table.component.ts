@@ -9,6 +9,7 @@ interface TableRow {
   selected: boolean;
   dateImported: string;
   dateUpdated: string;
+  batchName: any;
   importBy: string;
   batchId: string;
   importNameTool: string;
@@ -31,7 +32,7 @@ export class TableComponent implements OnInit {
   sortColumn: string | null = null;
   sortDirection: "asc" | "desc" = "asc";
   searchTerm: string = "";
-  items: number = 20;
+  items: number = 15;
   page: number = 1;
   totalBatches: number = 0;
   filter: string = "";
@@ -84,11 +85,12 @@ export class TableComponent implements OnInit {
           importBy: batch.requestorname,
           batchId: batch.batchid,
           importNameTool: batch.tool,
+          batchName: batch.batchname,
           progress: batch.progress,
           totalItems: batch.totalitems,
           status:
             batch.progress === 100
-              ? `Completed ${batch.totalitems} items`
+              ? `Completed`
               : `on-progress`,
           statusClass: batch.progress === 100 ? 'bg-green-200 text-green-800' : 'bg-yellow-200 text-yellow-800',
           hidden: false,
@@ -98,17 +100,17 @@ export class TableComponent implements OnInit {
   }
 
   getProgressBarColor(progress: number): string {
-    if (progress <= 10) return "#FFEB3B"; // Light Yellow
+    if (progress <= 10) return "#FFEB3B"; 
     if (progress <= 20) return "#FFDD33";
     if (progress <= 30) return "#FFCC33";
     if (progress <= 40) return "#FFBB33";
-    if (progress <= 50) return "#FFAA33"; // Dark Yellow
+    if (progress <= 50) return "#FFAA33"; 
     if (progress <= 60) return "#FFA533";
     if (progress <= 70) return "#FF9933";
     if (progress <= 80) return "#FF8A33";
     if (progress <= 90) return "#FF7A33";
-    if (progress <= 100) return "#4CAF50"; // Green
-    return "#FFEB3B"; // Default color (light yellow)
+    if (progress <= 100) return "#4CAF50"; 
+    return "#FFEB3B"; 
   }
   
 
@@ -165,10 +167,6 @@ export class TableComponent implements OnInit {
   applySearch(): void {
     const lowerCaseSearchTerm = this.searchTerm.toLowerCase().trim();
 
-    if (!lowerCaseSearchTerm) {
-      this.tableData.forEach((row) => (row.hidden = false));
-      return;
-    }
 
     this.tableData.forEach((row) => {
       const matchesSearch =
@@ -179,7 +177,7 @@ export class TableComponent implements OnInit {
         row.importNameTool.toLowerCase().includes(lowerCaseSearchTerm) ||
         row.status.toLowerCase().includes(lowerCaseSearchTerm);
 
-      row.hidden = !matchesSearch;
+      row.hidden = matchesSearch;
     });
   }
 
@@ -191,7 +189,6 @@ export class TableComponent implements OnInit {
   }
 
   nextPage(): void {
-    alert(this.page);
     if (this.page * this.items < this.totalBatches) {
       this.page++;
       this.fetchBatches();
@@ -199,7 +196,6 @@ export class TableComponent implements OnInit {
   }
 
   previousPage(): void {
-    alert(this.page);
     if (this.page > 1) {
       this.page--;
       this.fetchBatches();
@@ -209,4 +205,7 @@ export class TableComponent implements OnInit {
   get totalPages(): number {
     return Math.ceil(this.totalBatches / this.items);
   }
+
+  public endEntry = Math.min(this.page * this.items, this.totalBatches)
+  public startEntry = (this.page - 1)*this.items + 1
 }

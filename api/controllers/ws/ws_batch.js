@@ -7,7 +7,7 @@ const wsBatchInit = async (socketIO) => {
 
     try {
         const uri = process.env.DB_ADDR;
-        const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+        const client = new MongoClient(uri);
 
         await client.connect();
         console.log('Connected to MongoDB');

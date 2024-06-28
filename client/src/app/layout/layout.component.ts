@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from "@angular/core";
-import { RouterModule } from "@angular/router";
+import { RouterModule, ActivatedRoute } from "@angular/router";
 import { CommonModule } from "@angular/common";
 import { BreadcrumbsComponent } from "../app-components/breadcrumbs/breadcrumbs.component";
 import { UserDataService } from "../services/user-data/user-data.service";
@@ -17,10 +17,12 @@ export class LayoutComponent implements OnInit, OnDestroy {
   userDataFromLocalStorage: any;
   userDataCookieExpired: any;
   isDarkMode = false;
+  urlSegments: string[] = [];
 
   constructor(
     private userDataService: UserDataService,
-    private websocketService: WebSocketService
+    private websocketService: WebSocketService,
+    private activatedRoute: ActivatedRoute
   ) {}
 
   public user = this.userDataService.getUserDataFromCookies();
@@ -40,6 +42,8 @@ export class LayoutComponent implements OnInit, OnDestroy {
       this.userDataService.removeUserDataFromLocalStorage();
     }
 
+    this.getUrlSegments();
+
     // this.websocketService.connectSocket();
 
     // this.websocketService.sendMessage(this.userMonitoringData);
@@ -47,6 +51,13 @@ export class LayoutComponent implements OnInit, OnDestroy {
     // this.websocketService.receiveMessages().subscribe((message) => {
     //   console.log("Received from server:", message);
     // });
+  }
+
+  getUrlSegments() {
+    this.activatedRoute.url.subscribe(segments => {
+      this.urlSegments = segments.map(segment => segment.path);
+      console.log(segments); // This will print each segment in the console
+    });
   }
 
   logoutExec(): void {
@@ -63,7 +74,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
   initializeSocketConnection() {
     this.websocketService.connectSocket();
   }
-
 
   disconnectSocket() {
     this.websocketService.disconnectSocket();

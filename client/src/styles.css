@@ -2,3 +2,30 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+@font-face {
+    font-display: swap;
+    font-family: Gerstner Programm FSL;
+    font-style: normal;
+    font-weight: 300;
+    src: url(../public/fonts/GerstnerProgrammFSLWeb-Light.597ff2a0.woff2) format("woff2")
+}
+
+@font-face {
+    font-display: swap;
+    font-family: Gerstner Programm FSL;
+    font-style: normal;
+    font-weight: 300;
+    src: url(../public/fonts/GerstnerProgrammFSLWeb-Medium.1cf69ddc.woff2) format("woff2")
+}
+
+
+@font-face {
+    font-display: swap;
+    font-family: Gerstner Programm FSL;
+    font-style: normal;
+    font-weight: 300;
+    src: url(../public/fonts/GerstnerProgrammFSLWeb-Regular.1cf69ddc.woff2) format("woff2")
+}
+

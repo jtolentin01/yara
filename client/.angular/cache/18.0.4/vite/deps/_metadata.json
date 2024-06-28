@@ -1,67 +1,67 @@
 {
-  "hash": "9fa14fa5",
+  "hash": "96d3772a",
   "configHash": "0b0b0ec9",
-  "lockfileHash": "26ecf63f",
-  "browserHash": "5ee55674",
+  "lockfileHash": "4701c3b3",
+  "browserHash": "555790fc",
   "optimized": {
     "@angular/common": {
       "src": "../../../../../node_modules/@angular/common/fesm2022/common.mjs",
       "file": "@angular_common.js",
-      "fileHash": "951aeefc",
+      "fileHash": "13b27040",
       "needsInterop": false
     },
     "@angular/common/http": {
       "src": "../../../../../node_modules/@angular/common/fesm2022/http.mjs",
       "file": "@angular_common_http.js",
-      "fileHash": "674dcfd6",
+      "fileHash": "830fc59d",
       "needsInterop": false
     },
     "@angular/core": {
       "src": "../../../../../node_modules/@angular/core/fesm2022/core.mjs",
       "file": "@angular_core.js",
-      "fileHash": "33c5c5f6",
+      "fileHash": "b72ae8fa",
       "needsInterop": false
     },
     "@angular/forms": {
       "src": "../../../../../node_modules/@angular/forms/fesm2022/forms.mjs",
       "file": "@angular_forms.js",
-      "fileHash": "19324482",
+      "fileHash": "66d087a5",
       "needsInterop": false
     },
     "@angular/platform-browser": {
       "src": "../../../../../node_modules/@angular/platform-browser/fesm2022/platform-browser.mjs",
       "file": "@angular_platform-browser.js",
-      "fileHash": "01fadcc6",
+      "fileHash": "7836311f",
       "needsInterop": false
     },
     "@angular/router": {
       "src": "../../../../../node_modules/@angular/router/fesm2022/router.mjs",
       "file": "@angular_router.js",
-      "fileHash": "988e1d2c",
+      "fileHash": "50079457",
       "needsInterop": false
     },
     "crypto-js": {
       "src": "../../../../../node_modules/crypto-js/index.js",
       "file": "crypto-js.js",
-      "fileHash": "43132259",
+      "fileHash": "66b16dfa",
       "needsInterop": true
     },
     "ngx-cookie-service": {
       "src": "../../../../../node_modules/ngx-cookie-service/fesm2022/ngx-cookie-service.mjs",
       "file": "ngx-cookie-service.js",
-      "fileHash": "4c5a54ba",
+      "fileHash": "b6c7e32c",
       "needsInterop": false
     },
     "rxjs": {
       "src": "../../../../../node_modules/rxjs/dist/esm5/index.js",
       "file": "rxjs.js",
-      "fileHash": "2e97b78d",
+      "fileHash": "47e3861c",
       "needsInterop": false
     },
     "socket.io-client": {
       "src": "../../../../../node_modules/socket.io-client/build/esm/index.js",
       "file": "socket__io-client.js",
-      "fileHash": "3b596a7e",
+      "fileHash": "42eb0182",
       "needsInterop": false
     }
   },
