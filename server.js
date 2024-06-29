@@ -36,6 +36,8 @@ io.on('connection', async (socket) => {
   console.log('a user connected');
 
   socket.on('message', async (data) => {
+
+    console.log(message);
     let ws = await wsOnInit(data, io);
     
     console.log('Received message:', ws);
