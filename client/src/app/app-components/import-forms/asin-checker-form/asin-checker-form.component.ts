@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, Validators } from '@angular/forms';
 import { FormUtilsService } from '../../../services/form-utils/form-utils.service';
+import { Router } from '@angular/router'; // Import Router
 
 @Component({
   selector: 'app-asin-checker-form',
@@ -13,7 +14,7 @@ import { FormUtilsService } from '../../../services/form-utils/form-utils.servic
 export class AsinCheckerFormComponent {
   importForm: FormGroup;
 
-  constructor(private formUtilsService: FormUtilsService) {
+  constructor(private formUtilsService: FormUtilsService, private router: Router) { // Inject Router
     this.importForm = this.formUtilsService.initializeForm([
       { controlName: 'importName', initialValue: '', validators: [Validators.required] },
       { controlName: 'productType', initialValue: 'asin', validators: [Validators.required] },
@@ -25,5 +26,6 @@ export class AsinCheckerFormComponent {
 
   submitForm(): void {
     this.formUtilsService.submitForm(this.importForm);
+    this.router.navigate(['/downloads']);
   }
 }

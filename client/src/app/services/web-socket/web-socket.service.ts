@@ -39,4 +39,12 @@ export class WebSocketService {
   disconnectSocket() {
     this.socket.disconnect();
   }
+
+  listenForUpdates(): Observable<any> {
+    return new Observable((observer) => {
+      this.socket.on('Updates:', (data) => {
+        observer.next(data);
+      });
+    });
+  }
 }
