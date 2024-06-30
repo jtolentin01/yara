@@ -1,6 +1,5 @@
 const express = require('express');
 const cors = require('cors');
-const path = require('path');
 const http = require('http');
 const { Server } = require('socket.io');
 const routes = require('./api/routes/index');
@@ -37,7 +36,6 @@ io.on('connection', async (socket) => {
 
   socket.on('message', async (data) => {
 
-    console.log(message);
     let ws = await wsOnInit(data, io);
     
     console.log('Received message:', ws);
@@ -45,7 +43,7 @@ io.on('connection', async (socket) => {
   });
 
   try {
-    await wsBatchInit(io); // Pass io here
+    await wsBatchInit(io); 
   } catch (error) {
     console.error('Error initializing wsBatchInit:', error);
   }

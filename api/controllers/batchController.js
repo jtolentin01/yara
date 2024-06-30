@@ -6,12 +6,11 @@ const { batches } = require("../models/index");
 const newBatch = async (req, res, next) => {
   const { tool, importName, productIDs } = req.body;
   const user = parseUserData(req);
-  const batchId = newBatchId("ACL");
-  console.log(user);
-
+  
   try {
     switch (tool) {
       case "asin-checker-v2":
+        const batchId = newBatchId("ACL");
         await batches.create({
           batchid: batchId,
           batchname: importName,

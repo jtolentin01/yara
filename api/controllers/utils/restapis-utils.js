@@ -1,8 +1,9 @@
 const CryptoJS = require('crypto-js');
 const secretKey = process.env.ENCRYPTION_KEY;
 
+
 const parseUserData = (req) => {
-    const cookie = req.headers.cookie.replace(/^user=/, '')
+    const cookie = req.headers.cookie.replace(/^user=/, '');
     const userData = JSON.parse(decryptData(cookie,secretKey));
     return userData.data;
 };
