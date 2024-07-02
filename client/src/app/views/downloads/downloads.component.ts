@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from "@angular/core";
-import { TableComponent } from '../../app-components/table/table.component';
+import { TableComponent } from '../../app-components/download-table/table.component';
 
 @Component({
   selector: 'app-downloads',

@@ -1,7 +1,8 @@
 const { users } = require("../models/index");
+const ck = require('ckey');
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const key = process.env.ENCRYPTION_KEY;
+const key = ck.ENCRYPTION_KEY;
 
 
 
@@ -31,5 +32,6 @@ const loginInit = async (req, res, next) => {
     next(error);
   }
 };
+
 
 module.exports = { loginInit };

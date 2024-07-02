@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { UserDataService } from '../user-data/user-data.service';
 
@@ -12,10 +12,6 @@ export class ToolsService {
   public user = this.userDataService.getUserDataFromCookies();
 
   getTools(): Observable<any> {
-    const headers = new HttpHeaders({
-      'Authorization': this.user.authorization
-    });
-
-    return this.http.get<any>(this.apiUrl, { headers });
+    return this.http.get<any>(this.apiUrl);
   }
 }

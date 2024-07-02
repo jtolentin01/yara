@@ -22,23 +22,15 @@ const io = new Server(server, {
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: false }));
 
-// NODE_ENV='production'
-// app.use(cors({credentials: true, origin: 'https://orderswift.outdoorequippedservice.com'}));
-
-// NODE_ENV='development'
 app.use(cors());
 
 routes.initRoutes({ app });
 models.connectDB();
 
 io.on('connection', async (socket) => {
-  console.log('a user connected');
 
   socket.on('message', async (data) => {
-
     let ws = await wsOnInit(data, io);
-    
-    console.log('Received message:', ws);
     socket.emit('message', ws);
   });
 

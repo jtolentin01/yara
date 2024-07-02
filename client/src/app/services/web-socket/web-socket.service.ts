@@ -10,7 +10,7 @@ export class WebSocketService {
 
   constructor() {
     // Connect to your socket.io server
-    this.socket = io('http://localhost:5000'); // Replace with your server URL
+    this.socket = io('http://localhost:5000');
   }
 
   // Method to connect to socket.io server

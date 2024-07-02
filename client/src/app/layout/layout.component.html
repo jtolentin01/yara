@@ -51,6 +51,11 @@
           <div class="text-xl font-bold ml-2 text-white mr-5">{{ headerTitle }}</div>
         </div>
         <div class="flex flex-row items-center">
+          <div *ngFor="let user of activeUsers" class="mr-3">
+            <img [src]="user.profileImg" class="rounded-full" width="20px" height="20px" alt="User Image">
+          </div>
+        </div>
+        <div class="flex flex-row items-center">
           <p class="text-sm mr-2 text-white">{{ user.firstname }} {{ user.lastname }} ({{ user.id }})</p>
           <div class="mr-3">
             <img src="{{ profileImg }}" class="rounded-full" width="20px" height="20px" alt="User Image">

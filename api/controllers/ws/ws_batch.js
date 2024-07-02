@@ -3,7 +3,7 @@ const { MongoClient } = require('mongodb');
 let io;
 
 const wsBatchInit = async (socketIO) => {
-    io = socketIO; // Initialize socket.io instance
+    io = socketIO; 
 
     try {
         const uri = process.env.DB_ADDR;

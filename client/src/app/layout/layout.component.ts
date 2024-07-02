@@ -4,6 +4,7 @@ import { CommonModule } from "@angular/common";
 import { UserDataService } from "../services/user-data/user-data.service";
 import { WebSocketService } from "../services/web-socket/web-socket.service";
 import { filter } from 'rxjs/operators';
+import { ToolsService } from "../services/tools-list/tools.service";
 
 
 @Component({
@@ -19,16 +20,20 @@ export class LayoutComponent implements OnInit, OnDestroy {
   userDataCookieExpired: any;
   isDarkMode = false;
   urlSegments: string[] = [];
-  headerTitle = 'Downloads'; // Default title
+  headerTitle = 'Dashboard'; 
+  activeUsers: any[] = [];
+  readonly profileBaseUrl = 'https://yara-web.s3.ap-southeast-2.amazonaws.com/img/'
 
   constructor(
     private userDataService: UserDataService,
     private websocketService: WebSocketService,
-    private activatedRoute: ActivatedRoute,
-    private router: Router // Inject Router
+    private router: Router,
+    private toolsService: ToolsService
+
   ) {}
 
   public user = this.userDataService.getUserDataFromCookies();
+  public profileImg = `${this.profileBaseUrl}${this.user.profile}`;
   
   public userMonitoringData = {
     reqType: 1,
@@ -39,40 +44,48 @@ export class LayoutComponent implements OnInit, OnDestroy {
     }
   }
 
-  public profileImg = `https://yara-web.s3.ap-southeast-2.amazonaws.com/img/${this.user.profile}`;
+
 
   ngOnInit(): void {
     this.userDataCookieExpired = this.userDataService.isUserDataCookieExpired();
     if (this.userDataCookieExpired == true) {
-      this.userDataService.removeUserDataFromCookies();
-      this.userDataService.removeUserDataFromLocalStorage();
+      this.logoutExec();
     }
-
-    console.log(this.user);
-    this.getUrlSegments();
-
+    this.validateToken();
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe(() => {
       this.updateHeaderTitle();
     });
 
-    // this.websocketService.connectSocket();
+    this.websocketService.connectSocket();
+    this.websocketService.sendMessage(this.userMonitoringData);
+    this.websocketService.receiveMessages().subscribe((message) => {
+      if (message && message.active) {
+        console.log(message);
+        this.activeUsers = message.active.map((user: any) => ({
+          ...user,
+          profileImg: `${this.profileBaseUrl}${user.image}`
+        }));
+      }
+    });
+    
 
-    // this.websocketService.sendMessage(this.userMonitoringData);
-
-    // this.websocketService.receiveMessages().subscribe((message) => {
-    //   console.log("Received from server:", message);
-    // });
   }
 
-  getUrlSegments() {
-    this.activatedRoute.url.subscribe(segments => {
-      this.urlSegments = segments.map(segment => segment.path);
-      console.log(segments); // This will print each segment in the console
+  validateToken(): any {
+    this.toolsService.getTools().subscribe({
+      next: (data) => {
+        this.tools = data;
+      },
+      error: (error) => {
+        if (error) {
+          this.logoutExec();
+        }
+      }
     });
   }
-
+  
   updateHeaderTitle() {
     const currentRoute = this.router.url.split('/')[1];
     switch (currentRoute) {
@@ -86,7 +99,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
         this.headerTitle = 'Downloads';
         break;
       default:
-        this.headerTitle = 'Application'; // Default title if no match
+        this.headerTitle = 'Application'; 
     }
   }
 
@@ -101,13 +114,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
     this.websocketService.disconnectSocket();
   }
 
-  initializeSocketConnection() {
-    this.websocketService.connectSocket();
-  }
-
-  disconnectSocket() {
-    this.websocketService.disconnectSocket();
-  }
 
   test = (params: any) => {
     alert(`${params}`);
