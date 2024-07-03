@@ -1,54 +1,61 @@
 const { users } = require('../../models/index');
 let io;
+const activeUsers = {};
+const userConnections = {}; // Track number of connections per user
 
 const wsUserInit = async (socketIO, data) => {
-    io = socketIO;
+  io = socketIO;
 
-    io.on('connection', async (socket) => {
-        console.log('Received from ws user controller');
-        const internalid = data.reqBody.userId;
-        console.log(internalid);
+  io.on('connection', async (socket) => {
+    console.log('A user connected');
+    const internalid = data.reqBody.userId;
+    console.log(`User ID from request body: ${internalid}`);
 
-        if (internalid) {
-            try {
-                await users.findOneAndUpdate({ internalid }, { isonline: true });
-
-                console.log(`User ${internalid} is now online`);
-
-                socket.internalid = internalid;
-
-                socket.on('disconnect', async () => {
-                    const { internalid } = socket;
-                    await users.findOneAndUpdate({ internalid }, { isonline: false });
-                    console.log(`User ${internalid} is now offline`);
-                });
-            } catch (error) {
-                console.error('Error updating user status to online:', error);
-            }
+    if (internalid) {
+      try {
+        if (!userConnections[internalid]) {
+          userConnections[internalid] = 0;
         }
-    });
 
-    const changeStream = users.watch();
+        userConnections[internalid]++;
+        activeUsers[socket.id] = internalid;
+        console.log('Current active users:', activeUsers);
+        console.log('Current user connections:', userConnections);
+        
+        await users.findOneAndUpdate({ internalid }, { isonline: true });
+        console.log(`User ${internalid} is now online`);
+        socket.internalid = internalid;
 
-    changeStream.on('change', async (change) => {
-        if (change.operationType === 'update' || change.operationType === 'insert' || change.operationType === 'delete') {
-            try {
-                let activeUsers = await users.find({ isonline: true });
-                let activeUsersObj = activeUsers.map(user => ({
-                    id: user.internalid,
-                    firstname: user.firstname,
-                    lastname: user.lastname,
-                    image: user.image
-                }));
+        await emitOnlineUsers();
 
-                io.emit('message', { active: activeUsersObj });
-            } catch (error) {
-                console.error('Error fetching active users:', error);
-            }
-        }
-    });
+        socket.on('disconnect', async () => {
+          console.log(`User ${internalid} disconnected`);
+          userConnections[internalid]--;
+          if (userConnections[internalid] === 0) {
+            await users.findOneAndUpdate({ internalid }, { isonline: false });
+          }
+          delete activeUsers[socket.id];
+          console.log('Current active users:', activeUsers);
+          console.log('Current user connections:', userConnections);
+          
+          await emitOnlineUsers();
+        });
+      } catch (error) {
+        console.error('Error updating user status to online:', error);
+      }
+    } else {
+      console.error('No userId found in request body');
+    }
+  });
+};
 
-    return 'Connected';
+const emitOnlineUsers = async () => {
+  try {
+    const onlineUsers = await users.find({ isonline: true }).select('internalid username email image');
+    io.emit('message', onlineUsers);
+  } catch (error) {
+    console.error('Error fetching online users:', error);
+  }
 };
 
 module.exports = wsUserInit;
