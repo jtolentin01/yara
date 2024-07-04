@@ -19,13 +19,15 @@ const io = new Server(server, {
   },
 });
 
+/*************/
+
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: false }));
-
 app.use(cors());
-
 routes.initRoutes({ app });
 models.connectDB();
+
+/*************/
 
 io.on('connection', async (socket) => {
 
@@ -33,12 +35,6 @@ io.on('connection', async (socket) => {
     let ws = await wsOnInit(data, io);
     socket.emit('message', ws);
   });
-
-  try {
-    await wsBatchInit(io); 
-  } catch (error) {
-    console.error('Error initializing wsBatchInit:', error);
-  }
 
   socket.on('disconnect', () => {
     console.log('Client disconnected');

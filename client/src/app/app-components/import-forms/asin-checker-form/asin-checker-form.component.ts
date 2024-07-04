@@ -26,6 +26,6 @@ export class AsinCheckerFormComponent {
 
   submitForm(): void {
     this.formUtilsService.submitForm(this.importForm);
-    this.router.navigate(['/downloads']);
+    window.location.href = '/downloads';
   }
 }
