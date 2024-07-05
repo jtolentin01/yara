@@ -5,7 +5,6 @@ const { Server } = require('socket.io');
 const routes = require('./api/routes/index');
 const models = require('./api/models/index');
 const wsOnInit = require('./api/controllers/ws/index');
-const wsBatchInit = require('./api/controllers/ws/ws_batch');
 
 const app = express();
 const port = process.env.PORT || 5000;

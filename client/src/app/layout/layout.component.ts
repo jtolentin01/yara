@@ -58,17 +58,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
       this.updateHeaderTitle();
     });
 
-    this.websocketService.connectSocket();
-    this.websocketService.sendMessage(this.userMonitoringData);
-    this.websocketService.receiveMessages().subscribe((message) => {
-      if (message) {
-        this.activeUsers = message.map((user: any) => ({
-          ...user,
-          profileImg: `${this.profileBaseUrl}${user.image}`
-        }));
-      }
-    });
-    
 
   }
 

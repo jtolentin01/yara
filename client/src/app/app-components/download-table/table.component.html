@@ -2,92 +2,131 @@
   <div class="w-full mx-auto bg-[#0f0f0f] rounded-lg shadow overflow-hidden">
     <div class="p-4 flex items-center justify-between">
       <div class="flex space-x-4">
-        <input type="text" class="p-1.5 rounded-md bg-[#5f656a] text-[#f1f1f1]" placeholder="Search..." [(ngModel)]="searchTerm" (input)="applySearch()">
-        <button class="bg-[#545a5d] text-[#f1f1f1] text-sm p-1.5 px-3 rounded hover:bg-[#1a3757]">Search</button>
+        <input type="text" class="p-1.5 rounded-md bg-[#5f656a] text-[#f1f1f1]" placeholder="Search Import Name"
+          [(ngModel)]="searchTerm" (input)="applySearch()">
+
+        <form class="max-w-sm mx-auto">
+          <select class="bg-[#5f656a] border text-[#f1f1f1] text-sm rounded-lg focus:ring-blue-500 block w-full p-1.5">
+            <option value="">status</option>
+            <option value="all">All</option>
+            <option value="completed">Completed</option>
+            <option value="failed">Failed</option>
+            <option value="ongoing">Submitted</option>
+          </select>
+        </form>
+
+        <form class="max-w-sm mx-auto">
+          <select class="bg-[#5f656a] border text-[#f1f1f1] text-sm rounded-lg focus:ring-blue-500 block w-full p-1.5">
+            <option value="">Category</option>
+            <option value="asin-checker-lite">Asin Checker Lite V2</option>
+            <option value="listing-loader-v2">Listing Loader V2</option>
+          </select>
+        </form>
       </div>
-      <div class="flex space-x-4">
-        <button class="bg-[#545a5d] text-[#f1f1f1] text-sm p-1.5 px-3 rounded hover:bg-[#1a3757]">Select Dates</button>
-        <button class="bg-[#545a5d] text-[#f1f1f1] text-sm p-1.5 px-3 rounded hover:bg-[#1a3757]">Sort</button>
-        <button class="bg-[#545a5d] text-[#f1f1f1] text-sm p-1.5 px-3 rounded hover:bg-[#1a3757]">Group</button>
+      <div class="flex space-x-4 items-center">
+        <p class="text-[#ebeae3] text-sm">Show all batches</p>
+        <label class="inline-flex items-center cursor-pointer">
+          <input type="checkbox" [(ngModel)]="toggleChecked" (change)="setShowAllBatches()" class="sr-only peer">
+          <div
+            class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
+          </div>
+          <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">{{ toggleChecked ? '' : '' }}</span>
+        </label>
       </div>
     </div>
 
     <ng-container *ngIf="tableData.length > 0; else noDataTemplate">
-    <table class="min-w-full divide-y divide-[#4f504f]">
-      <thead class="bg-gray-900">
-        <tr>
-          <th class="px-6 py-3 text-left text-xs font-medium text-[#c8c7ba] uppercase tracking-wider">
-            <input type="checkbox" class="form-checkbox h-4 w-4 text-[#49a5ab] transition duration-150 ease-in-out" (change)="toggleAllCheckboxes($event)">
-          </th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-[#c8c7ba] uppercase tracking-wider cursor-pointer" (click)="sortTable('dateImported')">
-            Date Imported
-            <span *ngIf="sortColumn === 'dateImported'">
-              {{ sortDirection === 'asc' ? '↑' : '↓' }}
-            </span>
-          </th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-[#c8c7ba] uppercase tracking-wider cursor-pointer" (click)="sortTable('dateUpdated')">
-            Date Updated
-            <span *ngIf="sortColumn === 'dateUpdated'">
-              {{ sortDirection === 'asc' ? '↑' : '↓' }}
-            </span>
-          </th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-[#c8c7ba] uppercase tracking-wider">Import By</th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-[#c8c7ba] uppercase tracking-wider">Batch ID</th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-[#c8c7ba] uppercase tracking-wider">Import Name & Tool</th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-[#c8c7ba] uppercase tracking-wider">Total Items</th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-[#c8c7ba] uppercase tracking-wider">Progress</th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-[#c8c7ba] uppercase tracking-wider">Status</th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-[#c8c7ba] uppercase tracking-wider">Actions</th>
-        </tr>
-      </thead>
-      <tbody class="bg-[#0f0f0f] divide-y divide-[#4f504f]">
-        <tr *ngFor="let row of tableData; let i = index" [ngClass]="{ 'bg-[#332c28] hover:bg-[#0f0f0f]': row.hidden, 'bg-[#111111] hover:bg-[#1d1e1f]': !row.hidden, 'bg-gray-800': i % 2 === 0, 'bg-gray-700': i % 2 !== 0 }">
-          <td class="px-6 py-4 whitespace-no-wrap">
-            <input type="checkbox" class="form-checkbox h-4 w-4 text-[#49a5ab] transition duration-150 ease-in-out" [(ngModel)]="row.selected">
-          </td>
-          <td class="px-6 py-4 whitespace-no-wrap text-sm font-medium text-[#f1f1f1]">{{row.dateImported}}</td>
-          <td class="px-6 py-4 whitespace-no-wrap text-sm text-[#c8c7ba]">{{row.dateUpdated}}</td>
-          <td class="px-6 py-4 whitespace-no-wrap text-sm text-[#c8c7ba]">{{row.importBy}}</td>
-          <td class="px-6 py-4 whitespace-no-wrap text-sm text-[#c8c7ba]">{{row.batchId}}</td>
-          <td class="px-6 py-4 whitespace-no-wrap text-sm text-[#c8c7ba]">
-            <div>{{row.importNameTool}}</div>
-            <div>{{row.batchName}}</div>
-          </td>
-          <td class="px-6 py-4 whitespace-no-wrap text-sm text-[#c8c7ba]">
-            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full">{{ row.totalItems }}</span>
-          </td>
-          <td class="px-6 py-4 whitespace-no-wrap text-sm text-[#c8c7ba]">
-            <div class="w-full bg-[#4f504f] rounded-full h-2">
-              <div [ngStyle]="{ 'background-color': getProgressBarColor(row.progress), width: row.progress + '%' }" class="h-2 rounded-full"></div>
-            </div>
-            <span class="text-[0.7rem]">{{ row.progress }}% of {{row.totalItems}} items</span>
-          </td>
-          <td class="px-6 py-4 whitespace-no-wrap text-sm text-[#c8c7ba]">
-            <span [ngClass]="row.statusClass" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full">{{ row.status }}</span>
-          </td>
-          <td class="px-6 py-4 whitespace-no-wrap text-sm text-[#c8c7ba] flex flex-row items-center justify-center">
-            <a class="cursor-pointer text-[#f1f1f1] hover:text-green-200 px-2 py-1 rounded" [class.cursor-not-allowed]="row.progress < 100" [class.bg-[#4f504f]]="row.progress < 100" [class.text-[#c8c7ba]]="row.progress < 100" (click)="downloadResult(row.batchId, row.progress)" [attr.disabled]="row.progress < 100 ? true : null">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
-              </svg>           
-            </a>
-            <button (click)="deleteBatch(row.batchId)" class="hover:text-red-400">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-              </svg>
-          </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </ng-container>
+      <table class="min-w-full divide-y divide-[#4f504f]">
+        <thead class="bg-gray-900">
+          <tr>
+            <th class="px-6 py-3 text-left text-xs font-medium text-[#c8c7ba] uppercase tracking-wider">
+              <input type="checkbox" class="form-checkbox h-4 w-4 text-[#49a5ab] transition duration-150 ease-in-out"
+                (change)="toggleAllCheckboxes($event)">
+            </th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-[#c8c7ba] uppercase tracking-wider cursor-pointer"
+              (click)="sortTable('dateImported')">
+              Date Imported
+              <span *ngIf="sortColumn === 'dateImported'">
+                {{ sortDirection === 'asc' ? '↑' : '↓' }}
+              </span>
+            </th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-[#c8c7ba] uppercase tracking-wider cursor-pointer"
+              (click)="sortTable('dateUpdated')">
+              Date Updated
+              <span *ngIf="sortColumn === 'dateUpdated'">
+                {{ sortDirection === 'asc' ? '↑' : '↓' }}
+              </span>
+            </th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-[#c8c7ba] uppercase tracking-wider">Import By</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-[#c8c7ba] uppercase tracking-wider">Batch ID</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-[#c8c7ba] uppercase tracking-wider">Import Name &
+              Tool</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-[#c8c7ba] uppercase tracking-wider">Total Items</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-[#c8c7ba] uppercase tracking-wider">Progress</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-[#c8c7ba] uppercase tracking-wider">Status</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-[#c8c7ba] uppercase tracking-wider">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="bg-[#0f0f0f] divide-y divide-[#4f504f]">
+          <tr *ngFor="let row of tableData; let i = index"
+            [ngClass]="{ 'bg-[#332c28] hover:bg-[#0f0f0f]': row.hidden, 'bg-[#111111] hover:bg-[#1d1e1f]': !row.hidden, 'bg-gray-800': i % 2 === 0, 'bg-gray-700': i % 2 !== 0 }">
+            <td class="px-6 py-4 whitespace-no-wrap">
+              <input type="checkbox" class="form-checkbox h-4 w-4 text-[#49a5ab] transition duration-150 ease-in-out"
+                [(ngModel)]="row.selected">
+            </td>
+            <td class="px-6 py-4 whitespace-no-wrap text-sm font-medium text-[#f1f1f1]">{{row.dateImported}}</td>
+            <td class="px-6 py-4 whitespace-no-wrap text-sm text-[#c8c7ba]">{{row.dateUpdated}}</td>
+            <td class="px-6 py-4 whitespace-no-wrap text-sm text-[#c8c7ba]">{{row.importBy}}</td>
+            <td class="px-6 py-4 whitespace-no-wrap text-sm text-[#c8c7ba]">{{row.batchId}}</td>
+            <td class="px-6 py-4 whitespace-no-wrap text-sm text-[#c8c7ba]">
+              <div>{{row.importNameTool}}</div>
+              <div>{{row.batchName}}</div>
+            </td>
+            <td class="px-6 py-4 whitespace-no-wrap text-sm text-[#c8c7ba]">
+              <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full">{{ row.totalItems }}</span>
+            </td>
+            <td class="px-6 py-4 whitespace-no-wrap text-sm text-[#c8c7ba]">
+              <div class="w-full bg-[#4f504f] rounded-full h-2">
+                <div [ngStyle]="{ 'background-color': getProgressBarColor(row.progress), width: row.progress + '%' }"
+                  class="h-2 rounded-full"></div>
+              </div>
+              <span class="text-[0.7rem]">{{ row.progress }}% of {{row.totalItems}} items</span>
+            </td>
+            <td class="px-6 py-4 whitespace-no-wrap text-sm text-[#c8c7ba]">
+              <span [ngClass]="row.statusClass" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full">{{
+                row.status }}</span>
+            </td>
+            <td class="px-6 py-4 whitespace-no-wrap text-sm text-[#c8c7ba] flex flex-row items-center justify-center">
+              <a class="cursor-pointer text-[#f1f1f1] hover:text-green-200 px-2 py-1 rounded"
+                [class.cursor-not-allowed]="row.progress < 100" [class.bg-[#4f504f]]="row.progress < 100"
+                [class.text-[#c8c7ba]]="row.progress < 100" (click)="downloadResult(row.batchId, row.progress)"
+                [attr.disabled]="row.progress < 100 ? true : null">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                  stroke="currentColor" class="size-6">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                </svg>
+              </a>
+              <button (click)="deleteBatch(row.batchId)" class="hover:text-red-400">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                  stroke="currentColor" class="size-6">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                    d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                </svg>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </ng-container>
     <div class="p-4 flex justify-between items-center">
       <span class="text-[#f1f1f1] text-sm">Page {{page}} of {{totalPages}}</span>
       <div class="flex flex-row justify-center items-center">
 
-        <button class="bg-[#545a5d] text-[#f1f1f1] text-sm p-1.5 px-3 rounded hover:bg-[#1a3757] mr-2" (click)="previousPage()" [disabled]="page === 1">Previous</button>
-        <button class="bg-[#545a5d] text-[#f1f1f1] text-sm p-1.5 px-3 rounded hover:bg-[#1a3757]" (click)="nextPage()" [disabled]="page >= totalPages">Next</button>
-      
+        <button class="bg-[#545a5d] text-[#f1f1f1] text-sm p-1.5 px-3 rounded hover:bg-[#1a3757] mr-2"
+          (click)="previousPage()" [disabled]="page === 1">Previous</button>
+        <button class="bg-[#545a5d] text-[#f1f1f1] text-sm p-1.5 px-3 rounded hover:bg-[#1a3757]" (click)="nextPage()"
+          [disabled]="page >= totalPages">Next</button>
       </div>
 
     </div>
@@ -96,7 +135,7 @@
 
 
 <ng-template #noDataTemplate>
-  <div class="p-4 text-[#f1f1f1]">
+  <div class="p-4 text-[#f1f1f1] mb-[30%]">
     No data to display
   </div>
 </ng-template>

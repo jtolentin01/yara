@@ -38,6 +38,7 @@ export class TableComponent implements OnInit {
   totalBatches: number = 0;
   filter: string = "";
   category: string = "";
+  toggleChecked: boolean = localStorage.getItem('showallbatches') === 'true';
 
   constructor(
     private batchesService: BatchesService,
@@ -52,10 +53,11 @@ export class TableComponent implements OnInit {
     },
   };
 
-  public user = this.userDataService.getUserDataFromCookies();
+  public user = localStorage.getItem('showallbatches') === 'true' ? " " : this.userDataService.getUserDataFromCookies();
 
   ngOnInit(): void {
-    this.fetchOrSearchBatches(this.items, this.page, this.filter, this.category, this.user.id);
+    this.updateToggle();
+    this.fetchOrSearchBatches(this.items, this.page, this.filter, this.category, this.user.id || "");
     this.websocketService.connectSocket();
     this.websocketService.sendMessage({
       reqType: 2,
@@ -65,24 +67,28 @@ export class TableComponent implements OnInit {
     });
     this.websocketService.receiveMessages().subscribe((message) => {
       if (message.updatedBatchId) {
-        const batchToUpdate = this.tableData.find((batch) => batch._id === message.updatedBatchId._id);
+        const batchToUpdate = this.tableData.find((batch) => batch._id === message.updatedBatchId);
+        console.log(batchToUpdate);
         if (batchToUpdate) {
           batchToUpdate.progress = message.progress;
+          console.log(message.progress);
           batchToUpdate.status = message.progress === 100 ? `Completed ${batchToUpdate.totalItems} items` : `on-progress`;
 
           if (message.progress === 100) {
             setTimeout(() => {
-              this.fetchOrSearchBatches(this.items, this.page, this.filter, this.category, this.user.id);
+              this.fetchOrSearchBatches(this.items, this.page, this.filter, this.category, this.user.id || "");
             }, 3000);
           }
         }
+      } else if (message.new) {
+        this.fetchOrSearchBatches(this.items, this.page, this.filter, this.category, this.user.id || "");
       }
     });
+
   }
 
   fetchOrSearchBatches(items: any, page: any, filter: any, category: any, userid: any): void {
     if (this.searchTerm) {
-      // Perform search if searchTerm (batchid) is present
       this.batchesService.searchBatch(items, page, this.searchTerm).subscribe((response) => {
         this.updateTableData(response);
       });
@@ -105,8 +111,14 @@ export class TableComponent implements OnInit {
       batchName: batch.batchname,
       progress: batch.progress,
       totalItems: batch.totalitems,
-      status: batch.progress === 100 ? `Completed` : `on-progress`,
-      statusClass: batch.progress === 100 ? "bg-green-200 text-green-800" : "bg-yellow-200 text-yellow-800",
+      status: batch.progress === 100 ?
+        `Completed` :
+        (batch.status === 2 ? 'Error' : 'in-progress'),
+
+      statusClass: batch.progress === 100 ?
+        "bg-green-200 text-green-800" :
+        (batch.status === 2 ? "bg-red-200 text-red-800" : "bg-yellow-200 text-yellow-800"),
+
       hidden: false,
     }));
     this.totalBatches = response.totalBatches;
@@ -114,23 +126,20 @@ export class TableComponent implements OnInit {
 
   deleteBatch(batchId: string): void {
 
-    if(confirm(`Are you sure you want to delete batch ${batchId}`)) {
+    if (confirm(`Are you sure you want to delete batch ${batchId}`)) {
       this.batchesService.deleteBatch(batchId).subscribe(
         (response) => {
           if (response.batchId == batchId) {
             alert(`Batch: ${batchId} Succesfully Deleted!`);
-            this.fetchOrSearchBatches(this.items, this.page, this.filter, this.category, this.user.id);
+            this.fetchOrSearchBatches(this.items, this.page, this.filter, this.category, this.user.id || "");
           }
         },
         (error) => {
           console.error("Error deleting batch", error);
         }
       );
-    
+
     }
-
-
-
   }
 
   toggleAllCheckboxes(event: Event): void {
@@ -179,16 +188,29 @@ export class TableComponent implements OnInit {
   nextPage(): void {
     if (this.page * this.items < this.totalBatches) {
       this.page++;
-      this.fetchOrSearchBatches(this.items, this.page, this.filter, this.category, this.user.id);
+      this.fetchOrSearchBatches(this.items, this.page, this.filter, this.category, this.user.id || "");
     }
   }
 
   previousPage(): void {
     if (this.page > 1) {
       this.page--;
-      this.fetchOrSearchBatches(this.items, this.page, this.filter, this.category, this.user.id);
+      this.fetchOrSearchBatches(this.items, this.page, this.filter, this.category, this.user.id || "");
     }
   }
+
+  setShowAllBatches = (): void => {
+    const showAllBatches = localStorage.getItem('showallbatches') === 'true';
+    localStorage.setItem('showallbatches', showAllBatches ? 'false' : 'true');
+    this.updateToggle();
+    window.location.reload();
+    
+  }
+
+  updateToggle(): void {
+    this.toggleChecked = localStorage.getItem('showallbatches') === 'true';
+  }
+
 
   get totalPages(): number {
     return Math.ceil(this.totalBatches / this.items);
