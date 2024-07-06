@@ -35,7 +35,7 @@ const newBatch = async (req, res, next) => {
 
     res.status(200).json({ success: true });
   } catch (error) {
-    next(error); // Forward error to error handling middleware
+    next(error); 
   }
 };
 
@@ -52,7 +52,7 @@ const getBatches = async (req, res, next) => {
     let query = {};
 
     if (filter) {
-      query.filter = filter;
+      query.status = filter;
     }
     if (requestorid) {
       query.requestorid = requestorid;
@@ -80,6 +80,8 @@ const getBatches = async (req, res, next) => {
         .limit(items);
       totalBatches = batches.find({}).countDocuments();
     }
+
+
 
     const [batch, totalCount] = await Promise.all([batchQuery, totalBatches]);
 

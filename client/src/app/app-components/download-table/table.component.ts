@@ -4,6 +4,7 @@ import { FormsModule } from "@angular/forms";
 import { BatchesService } from "../../services/batches/batches.service";
 import { WebSocketService } from "../../services/web-socket/web-socket.service";
 import { UserDataService } from "../../services/user-data/user-data.service";
+import { ToolsService } from "../../services/tools-list/tools.service";
 
 interface TableRow {
   _id: string;
@@ -37,13 +38,16 @@ export class TableComponent implements OnInit {
   page: number = 1;
   totalBatches: number = 0;
   filter: string = "";
-  category: string = "";
+  status: string = "";  
+  category: string = "";  
   toggleChecked: boolean = localStorage.getItem('showallbatches') === 'true';
+  tools: any = {};
 
   constructor(
     private batchesService: BatchesService,
     private websocketService: WebSocketService,
-    private userDataService: UserDataService
+    private userDataService: UserDataService,
+    private toolsService: ToolsService
   ) { }
 
   public batchMonitoringData = {
@@ -83,6 +87,10 @@ export class TableComponent implements OnInit {
       } else if (message.new) {
         this.fetchOrSearchBatches(this.items, this.page, this.filter, this.category, this.user.id || "");
       }
+    });
+
+    this.toolsService.getTools().subscribe(data => {
+      this.tools = data;
     });
 
   }
@@ -246,4 +254,26 @@ export class TableComponent implements OnInit {
     downloadLink.click();
     document.body.removeChild(downloadLink);
   }
+
+    onStatusChange(status: string): void {
+      this.status = status;
+      this.fetchOrSearchBatches(this.items, this.page, this.status, this.category, this.user.id || "");
+    }
+  
+    onCategoryChange(category: string): void {
+      this.category = category;
+      this.fetchOrSearchBatches(this.items, this.page, this.status, this.category, this.user.id || "");
+    }
+  
+    handleSearchKeydown(event: KeyboardEvent): void {
+      if (event.key === 'Enter') {
+        this.applySearch();
+      }
+    }
+
+    getPaginationInfo(): string {
+      const startIndex = (this.page - 1) * this.items + 1;
+      const endIndex = this.page * this.items > this.totalBatches ? this.totalBatches : this.page * this.items;
+      return `Showing ${startIndex} - ${endIndex} of ${this.totalBatches}`;
+    }
 }

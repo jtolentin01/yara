@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit  } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import {
   ReactiveFormsModule,
@@ -6,24 +6,25 @@ import {
   FormBuilder,
   Validators,
 } from "@angular/forms";
+import { ToastService, AngularToastifyModule } from 'angular-toastify';
 import { AuthenticationService } from "../../services/authentication/authentication.service";
 import { UserDataService } from "../../services/user-data/user-data.service";
 
 @Component({
   selector: "app-login",
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule,AngularToastifyModule],
   templateUrl: "./login.component.html",
   styleUrls: ["./login.component.css"],
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   loginform: FormGroup;
   passwordVisible: boolean = false;
-
   constructor(
     private authService: AuthenticationService,
     private formBuilder: FormBuilder,
     private userService: UserDataService,
+    private _toastService: ToastService
   ) {
     this.loginform = this.formBuilder.group({
       email: ["", [Validators.required, Validators.email]],
@@ -35,9 +36,13 @@ export class LoginComponent {
     const storedEmail = localStorage.getItem('user');
     if (storedEmail) {
       this.loginform.patchValue({ email: storedEmail });
-    }
+    }    
   }
 
+  addInfoToast() {
+    this._toastService.error('s');
+  }
+  
   showPassword = (): void => {
     this.passwordVisible = !this.passwordVisible;
     const passwordField: HTMLInputElement | null = document.querySelector('#password');
@@ -57,14 +62,13 @@ export class LoginComponent {
           }
         },
         (error) => {
-          console.error("Error:", error);
-          alert("Failed to submit data");
+          this._toastService.error('Wrong email or password');
           this.loginform.reset();
         }
       );
     }
     else{
-      alert('Something Went Wrong!');
+      this._toastService.error('Something went wrong!');
       this.loginform.reset();
     }
   };

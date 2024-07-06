@@ -5,23 +5,19 @@
         <input type="text" class="p-1.5 rounded-md bg-[#5f656a] text-[#f1f1f1]" placeholder="Search Import Name"
           [(ngModel)]="searchTerm" (input)="applySearch()">
 
-        <form class="max-w-sm mx-auto">
-          <select class="bg-[#5f656a] border text-[#f1f1f1] text-sm rounded-lg focus:ring-blue-500 block w-full p-1.5">
+          <select id="status" [(ngModel)]="status" (change)="onStatusChange(status)" class="bg-[#5f656a] border text-[#f1f1f1] text-sm rounded-lg focus:ring-blue-500 block w-full p-1.5">
             <option value="">status</option>
-            <option value="all">All</option>
-            <option value="completed">Completed</option>
-            <option value="failed">Failed</option>
-            <option value="ongoing">Submitted</option>
+            <option value="3">Completed</option>
+            <option value="2">Failed</option>
+            <option value="1">Ongoing</option>
           </select>
-        </form>
 
-        <form class="max-w-sm mx-auto">
-          <select class="bg-[#5f656a] border text-[#f1f1f1] text-sm rounded-lg focus:ring-blue-500 block w-full p-1.5">
+          <select id="category" [(ngModel)]="category" (change)="onCategoryChange(category)" class="bg-[#5f656a] border text-[#f1f1f1] text-sm rounded-lg focus:ring-blue-500 block w-full p-1.5">
             <option value="">Category</option>
-            <option value="asin-checker-lite">Asin Checker Lite V2</option>
-            <option value="listing-loader-v2">Listing Loader V2</option>
+            <option *ngFor="let tool of tools.tools" [value]="tool.subname">{{tool.name}}</option>
           </select>
-        </form>
+          
+
       </div>
       <div class="flex space-x-4 items-center">
         <p class="text-[#ebeae3] text-sm">Show all batches</p>
@@ -121,13 +117,15 @@
     </ng-container>
     <div class="p-4 flex justify-between items-center">
       <span class="text-[#f1f1f1] text-sm">Page {{page}} of {{totalPages}}</span>
-      <div class="flex flex-row justify-center items-center">
 
+      <p class="text-[#ebeae3] text-sm" >{{getPaginationInfo()}}</p>
+      <div class="flex flex-row justify-center items-center">
         <button class="bg-[#545a5d] text-[#f1f1f1] text-sm p-1.5 px-3 rounded hover:bg-[#1a3757] mr-2"
           (click)="previousPage()" [disabled]="page === 1">Previous</button>
         <button class="bg-[#545a5d] text-[#f1f1f1] text-sm p-1.5 px-3 rounded hover:bg-[#1a3757]" (click)="nextPage()"
           [disabled]="page >= totalPages">Next</button>
       </div>
+
 
     </div>
   </div>

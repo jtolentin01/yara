@@ -1,11 +1,15 @@
 import { Component, OnInit, OnDestroy } from "@angular/core";
-import { Router, ActivatedRoute, NavigationEnd, RouterModule } from "@angular/router";
+import {
+  Router,
+  ActivatedRoute,
+  NavigationEnd,
+  RouterModule,
+} from "@angular/router";
 import { CommonModule } from "@angular/common";
 import { UserDataService } from "../services/user-data/user-data.service";
 import { WebSocketService } from "../services/web-socket/web-socket.service";
-import { filter } from 'rxjs/operators';
+import { filter } from "rxjs/operators";
 import { ToolsService } from "../services/tools-list/tools.service";
-
 
 @Component({
   selector: "app-layout",
@@ -20,31 +24,29 @@ export class LayoutComponent implements OnInit, OnDestroy {
   userDataCookieExpired: any;
   isDarkMode = false;
   urlSegments: string[] = [];
-  headerTitle = 'Dashboard'; 
+  headerTitle = "Dashboard";
   activeUsers: any[] = [];
-  readonly profileBaseUrl = 'https://yara-web.s3.ap-southeast-2.amazonaws.com/img/'
+  readonly profileBaseUrl =
+    "https://yara-web.s3.ap-southeast-2.amazonaws.com/img/";
 
   constructor(
     private userDataService: UserDataService,
     private websocketService: WebSocketService,
     private router: Router,
     private toolsService: ToolsService
-
   ) {}
 
   public user = this.userDataService.getUserDataFromCookies();
   public profileImg = `${this.profileBaseUrl}${this.user.profile}`;
-  
+
   public userMonitoringData = {
     reqType: 1,
     reqBody: {
       userId: this.user.id,
       userEmail: this.user.email,
-      active: true
-    }
-  }
-
-
+      active: true,
+    },
+  };
 
   ngOnInit(): void {
     this.userDataCookieExpired = this.userDataService.isUserDataCookieExpired();
@@ -52,13 +54,11 @@ export class LayoutComponent implements OnInit, OnDestroy {
       this.logoutExec();
     }
     this.validateToken();
-    this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd)
-    ).subscribe(() => {
-      this.updateHeaderTitle();
-    });
-
-
+    this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe(() => {
+        this.updateHeaderTitle();
+      });
   }
 
   validateToken(): any {
@@ -70,38 +70,40 @@ export class LayoutComponent implements OnInit, OnDestroy {
         if (error) {
           this.logoutExec();
         }
-      }
+      },
     });
   }
-  
+
   updateHeaderTitle() {
-    const currentRoute = this.router.url.split('/')[1];
+    const currentRoute = this.router.url.split("/")[1];
     switch (currentRoute) {
-      case 'dashboard':
-        this.headerTitle = 'Dashboard';
+      case "dashboard":
+        this.headerTitle = "Dashboard";
         break;
-      case 'tools':
-        this.headerTitle = 'Tools';
+      case "tools":
+        this.headerTitle = "Tools";
         break;
-      case 'downloads':
-        this.headerTitle = 'Downloads';
+      case "downloads":
+        this.headerTitle = "Downloads";
+        break;
+      case "users-management":
+        this.headerTitle = "Manage Users";
         break;
       default:
-        this.headerTitle = 'Application'; 
+        this.headerTitle = "Application";
     }
   }
 
   logoutExec(): void {
     this.userDataService.removeUserDataFromCookies();
-    localStorage.setItem('user', this.user.email);
-    localStorage.setItem('expired', 'true');
+    localStorage.setItem("user", this.user.email);
+    localStorage.setItem("expired", "true");
     window.location.reload();
   }
 
   ngOnDestroy() {
     this.websocketService.disconnectSocket();
   }
-
 
   test = (params: any) => {
     alert(`${params}`);

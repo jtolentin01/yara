@@ -3,9 +3,14 @@ const ck = require('ckey');
 const secretKey = ck.ENCRYPTION_KEY;
 
 const parseUserData = (req) => {
-    const cookie = req.headers.cookie.replace(/^user=/, '');
-    const userData = JSON.parse(decryptData(cookie,secretKey));
-    return userData.data;
+    try{
+        const cookie = req.headers.cookie.replace(/^user=/, '');
+        const userData = JSON.parse(decryptData(cookie,secretKey));
+        return userData.data;
+    }catch(error){
+        return "";
+    }
+
 };
 
 const decryptData = (encryptedData, secretKey) => {
