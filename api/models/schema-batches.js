@@ -35,6 +35,10 @@ const schema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    info: {
+      type: Array,
+      default: [],
+    },
     createby: {
       type: String,
       required: true,

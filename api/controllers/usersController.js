@@ -1,11 +1,11 @@
 const { users } = require("../models/index");
 
 const getAllUsers = async (req, res, next) => {
-    let user = await users.find()
+    let usersList = await users.find()
     .sort({ createdAt: -1 })
         .skip(0)
         .limit(15);
-    res.status(200).json(user);
+    res.status(200).json({usersList});
 }
 
 const getUser = async (req, res, next) => {
