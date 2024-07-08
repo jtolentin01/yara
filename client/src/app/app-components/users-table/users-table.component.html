@@ -1,106 +1,110 @@
 <div class="w-full h-auto">
-    <div class="w-full mx-auto bg-[#0f0f0f] rounded-lg shadow overflow-hidden">
-      <div class="p-4 flex items-center justify-between">
-        <div class="flex space-x-4">
-          <select id="status"
-                  class="bg-[#5f656a] border text-[#f1f1f1] text-sm rounded-lg focus:ring-blue-500 block w-full p-1.5">
-            <option value="">status</option>
-            <option value="3">Completed</option>
-            <option value="2">Failed</option>
-            <option value="1">Ongoing</option>
-          </select>
-  
-          <!-- Static select for category -->
-          <select id="category"
-                  class="bg-[#5f656a] border text-[#f1f1f1] text-sm rounded-lg focus:ring-blue-500 block w-full p-1.5">
-            <option value="">Category</option>
-            <option value="Tool1">Tool 1</option>
-            <option value="Tool2">Tool 2</option>
-            <option value="Tool3">Tool 3</option>
-          </select>
-        </div>
-  
-        <div>
-          <button class="bg-[#545a5d] text-[#f1f1f1] flex items-center text-sm p-1.5 px-3 rounded hover:bg-[#1a3757] mr-2"
-           [disabled]="page === 1"><span class="mr-1">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766Z" />
-            </svg>
-            
-           </span>Add User</button>
-        </div>
+  <div class="w-full mx-auto bg-[#0f0f0f] rounded-lg shadow overflow-hidden">
+    <div class="p-4 flex items-center justify-between">
+      <div class="flex space-x-4">
+        <select id="status" [(ngModel)]="status" (change)="onStatusChange(status)"
+          class="bg-[#5f656a] border text-[#f1f1f1] text-sm rounded-lg focus:ring-blue-500 block w-full p-1.5">
+          <option value="">status</option>
+          <option value="true">Active</option>
+          <option value="false">Inactive</option>
+        </select>
+
+        <select id="category" [(ngModel)]="category" (change)="onCategoryChange(category)"
+          class="bg-[#5f656a] border text-[#f1f1f1] text-sm rounded-lg focus:ring-blue-500 block w-full p-1.5">
+          <option value="">Category</option>
+          <option value="listings-ops">Listings Ops</option>
+          <option value="listings-exclusives">Listings Exclusives</option>
+          <option value="demand-data">Demand Data</option>
+          <option value="inventory">Inventory</option>
+          <option value="pricing">Pricing</option>
+          <option value="admin">Admin</option>
+        </select>
       </div>
-  
-      <!-- Table with static data -->
-      <table class="min-w-full divide-y divide-[#4f504f]">
-        <thead class="bg-gray-900">
-          <tr>
-            <th class="px-6 py-3 text-left text-xs font-medium text-[#c8c7ba] uppercase tracking-wider">
-            </th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-[#c8c7ba] uppercase tracking-wider cursor-pointer">
-              ID
-            </th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-[#c8c7ba] uppercase tracking-wider">Name</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-[#c8c7ba] uppercase tracking-wider">Email</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-[#c8c7ba] uppercase tracking-wider">Department</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-[#c8c7ba] uppercase tracking-wider">Role</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-[#c8c7ba] uppercase tracking-wider">Added By</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-[#c8c7ba] uppercase tracking-wider">Status</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-[#c8c7ba] uppercase tracking-wider">Updated Date</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-[#c8c7ba] uppercase tracking-wider">Actions</th>
-          </tr>
-        </thead>
-        <tbody class="bg-[#0f0f0f] divide-y divide-[#4f504f]">
-          <tr *ngFor="let row of tableData; let i = index">
-            <td class="px-6 py-4 whitespace-no-wrap">
-              <div>
-                <img src="#" />
-              </div>
-            </td>
-            <td class="px-6 py-4 whitespace-no-wrap text-sm font-medium text-[#f1f1f1]">{{row.internalId}}</td>
-            <td class="px-6 py-4 whitespace-no-wrap text-sm text-[#c8c7ba]">{{row.name}}</td>
-            <td class="px-6 py-4 whitespace-no-wrap text-sm text-[#c8c7ba]">{{row.email}}</td>
-            <td class="px-6 py-4 whitespace-no-wrap text-sm text-[#c8c7ba]">{{row.department}}</td>
-            <td class="px-6 py-4 whitespace-no-wrap text-sm text-[#c8c7ba]">{{row.role}}</td>
-            <td class="px-6 py-4 whitespace-no-wrap text-sm text-[#c8c7ba]">{{row.addedBy}}</td>
-            <td class="px-6 py-4 whitespace-no-wrap text-sm text-[#c8c7ba]">{{row.status}}</td>
-            <td class="px-6 py-4 whitespace-no-wrap text-sm text-[#c8c7ba]">{{row.updatedDate}}</td>
-            <td class="px-6 py-4 whitespace-no-wrap text-sm text-[#c8c7ba] flex flex-row items-center justify-center">
-              <a class="cursor-pointer text-[#f1f1f1] hover:text-green-200 px-2 py-1 rounded">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
-                </svg>
-                
-              </a>
-              <button class="hover:text-red-400">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                     stroke="currentColor" class="w-6 h-6">
-                  <path stroke-linecap="round" stroke-linejoin="round"
-                        d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/>
-                </svg>
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-  
-      <div class="p-4 flex justify-between items-center">
-        <span class="text-[#f1f1f1] text-sm">Page 1 of 1</span>
-  
-        <p class="text-[#ebeae3] text-sm">Showing 1-1 of 1</p>
-        <div class="flex flex-row justify-center items-center">
-          <button class="bg-[#545a5d] text-[#f1f1f1] text-sm p-1.5 px-3 rounded hover:bg-[#1a3757] mr-2"
-                  disabled>Previous
-          </button>
-          <button class="bg-[#545a5d] text-[#f1f1f1] text-sm p-1.5 px-3 rounded hover:bg-[#1a3757]">Next</button>
-        </div>
+
+      <div>
+        <button (click)="openAddUser()" class="bg-[#545a5d] text-[#f1f1f1] flex items-center text-sm p-1.5 px-3 rounded hover:bg-[#1a3757] mr-2">
+          <span class="mr-1">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766Z" />
+            </svg>
+          </span>Add User
+        </button>
+        <app-add-user-modal [isVisible]="isModalVisible" (close)="closeAddUser()"></app-add-user-modal>
+      </div>
+      
+    </div>
+
+    <table class="min-w-full divide-y divide-[#4f504f]">
+      <thead class="bg-gray-900">
+        <tr>
+          <th class="px-6 py-3 text-left text-xs font-medium text-[#c8c7ba] uppercase tracking-wider">
+          </th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-[#c8c7ba] uppercase tracking-wider cursor-pointer">
+            ID
+          </th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-[#c8c7ba] uppercase tracking-wider">Name</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-[#c8c7ba] uppercase tracking-wider">Email</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-[#c8c7ba] uppercase tracking-wider">Department</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-[#c8c7ba] uppercase tracking-wider">Role</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-[#c8c7ba] uppercase tracking-wider">Added By</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-[#c8c7ba] uppercase tracking-wider">Status</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-[#c8c7ba] uppercase tracking-wider">Updated Date</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-[#c8c7ba] uppercase tracking-wider">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="bg-[#0f0f0f] divide-y divide-[#4f504f]">
+        <tr *ngFor="let row of tableData; let i = index">
+          <td class="px-6 py-4 whitespace-no-wrap">
+            <div>
+              <img src="#" />
+            </div>
+          </td>
+          <td class="px-6 py-4 whitespace-no-wrap text-sm font-medium text-[#f1f1f1]">{{row.internalId}}</td>
+          <td class="px-6 py-4 whitespace-no-wrap text-sm text-[#c8c7ba]">{{row.name}}</td>
+          <td class="px-6 py-4 whitespace-no-wrap text-sm text-[#c8c7ba]">{{row.email}}</td>
+          <td class="px-6 py-4 whitespace-no-wrap text-sm text-[#c8c7ba]">{{row.department}}</td>
+          <td class="px-6 py-4 whitespace-no-wrap text-sm text-[#c8c7ba]">{{row.role}}</td>
+          <td class="px-6 py-4 whitespace-no-wrap text-sm text-[#c8c7ba]">{{row.addedBy}}</td>
+          <td class="px-6 py-4 whitespace-no-wrap text-sm text-[#c8c7ba]">{{row.status}}</td>
+          <td class="px-6 py-4 whitespace-no-wrap text-sm text-[#c8c7ba]">{{row.updatedDate}}</td>
+          <td class="px-6 py-4 whitespace-no-wrap text-sm text-[#c8c7ba] flex flex-row items-center justify-center">
+            <a class="cursor-pointer text-[#f1f1f1] hover:text-green-200 px-2 py-1 rounded">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="size-6">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+              </svg>
+
+            </a>
+            <button (click)="deleteUser(row.internalId)" class="hover:text-red-400">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+              </svg>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="p-4 flex justify-between items-center">
+      <span class="text-[#f1f1f1] text-sm">Page {{page}} of {{totalPages}}</span>
+
+      <p class="text-[#ebeae3] text-sm">{{getPaginationInfo()}}</p>
+      <div class="flex flex-row justify-center items-center">
+        <button class="bg-[#545a5d] text-[#f1f1f1] text-sm p-1.5 px-3 rounded hover:bg-[#1a3757] mr-2"
+          (click)="previousPage()" [disabled]="page === 1">Previous</button>
+        <button class="bg-[#545a5d] text-[#f1f1f1] text-sm p-1.5 px-3 rounded hover:bg-[#1a3757]" (click)="nextPage()"
+          [disabled]="page >= totalPages">Next</button>
       </div>
     </div>
   </div>
-  
-  <ng-template #noDataTemplate>
-    <div class="p-4 text-[#f1f1f1] mb-[30%]">
-      No data to display
-    </div>
-  </ng-template>
-  
+</div>
+
+<ng-template #noDataTemplate>
+  <div class="p-4 text-[#f1f1f1] mb-[30%]">
+    No data to display
+  </div>
+</ng-template>

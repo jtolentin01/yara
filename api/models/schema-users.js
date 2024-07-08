@@ -7,10 +7,6 @@ const schema = new mongoose.Schema(
       required: true,
       unique: true,
     },
-    username: {
-      type: String,
-      unique: true,
-    },
     firstname: {
       type: String,
       required: true,
@@ -36,6 +32,7 @@ const schema = new mongoose.Schema(
     },
     role: {
       type: String,
+      default: ""
     },
     accesslevel: {
       type: Number,

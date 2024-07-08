@@ -7,6 +7,12 @@ const newBatchId = (initial) => {
     return batchName;
 }
 
+const newUserId = () => {
+    const min = 10000; 
+    const max = 99999; 
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 const newTimeStamp = moment().tz('Asia/Manila').format('YYYYMMDDHHmmss');
 
-module.exports = { delay, newBatchId, newTimeStamp }
+module.exports = { delay, newBatchId, newTimeStamp, newUserId }

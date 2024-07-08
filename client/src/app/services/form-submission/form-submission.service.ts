@@ -6,7 +6,9 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class FormSubmissionService {
-  private apiUrl = '/api/v1/batch/new'; 
+  private newBatch = '/api/v1/batch/new'; 
+  private newUser = '/api/v1/users/new'; 
+
 
   constructor(private http: HttpClient) {}
 
@@ -20,6 +22,9 @@ export class FormSubmissionService {
       }
     }
 
-    return this.http.post<any>(this.apiUrl, body, { headers });
+    return this.http.post<any>(this.newBatch, body, { headers });
+  }
+  submitNewUser(userData: any): Observable<any> {
+    return this.http.post<any>(this.newUser, userData);
   }
 }

@@ -81,8 +81,6 @@ const getBatches = async (req, res, next) => {
       totalBatches = batches.find({}).countDocuments();
     }
 
-
-
     const [batch, totalCount] = await Promise.all([batchQuery, totalBatches]);
 
     res.status(200).json({
