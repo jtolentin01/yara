@@ -1,0 +1,33 @@
+
+<form [formGroup]="importForm" (ngSubmit)="submitForm()" class="bg-gray-900 text-white p-6 rounded-lg shadow-lg">
+    <div class="form-control">
+        <div class="mb-4">
+            <label class="block text-gray-300 text-sm font-bold mb-2">
+                Type
+            </label>
+            <select formControlName="fsrType" class="w-full bg-gray-800 p-2 rounded text-gray-300">
+                <option value="request">Request</option>
+                <option value="feedback">Feedback</option>
+                <option value="suggestions">Suggestions</option>
+                <option value="bug">Bug Report</option>
+            </select>
+        </div>
+        <div class="mb-6">
+            <label class="block text-gray-300 text-sm font-bold mb-2">
+                Message
+            </label>
+            <textarea formControlName="message"
+                class="shadow appearance-none border rounded w-full h-full py-2 px-3 text-gray-300 leading-tight focus:outline-none focus:shadow-outline bg-gray-800"
+                id="productIDs" placeholder="Enter your detailed message"
+                style="min-height: 100px; max-height: 200px; resize: vertical;">
+        </textarea>
+        </div>
+        <div class="flex items-center justify-center md:justify-end">
+            <button
+                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full md:w-full"
+                type="submit">
+                Submit
+            </button>
+        </div>
+    </div>
+</form>

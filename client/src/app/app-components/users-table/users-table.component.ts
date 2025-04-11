@@ -4,6 +4,9 @@ import { UserDataService } from "../../services/user-data/user-data.service";
 import { UsersService } from "../../services/users/users.service";
 import { FormsModule } from "@angular/forms";
 import { AddUserModalComponent } from "../add-user-modal/add-user-modal.component";
+import { DeleteService } from "../../services/delete/delete.service";
+import { EditUserModalComponent } from "../edit-user-modal/edit-user-modal.component";
+
 
 interface TableRow {
   _id: string;
@@ -16,18 +19,21 @@ interface TableRow {
   department: string;
   role: any;
   addedBy: string;
-  status: Boolean;
+  status: string; 
   updatedDate: string;
+  accessLevel: any;
+  profile: any;
 }
-
 
 @Component({
   selector: 'app-users-table',
   standalone: true,
-  imports: [CommonModule,FormsModule, AddUserModalComponent],
+  imports: [CommonModule, FormsModule, AddUserModalComponent, EditUserModalComponent],
   templateUrl: './users-table.component.html',
   styleUrl: './users-table.component.css'
 })
+
+
 export class UsersTableComponent implements OnInit {
   tableData: TableRow[] = [];
   sortColumn: string | null = null;
@@ -42,10 +48,12 @@ export class UsersTableComponent implements OnInit {
   toggleChecked: boolean = localStorage.getItem('showallbatches') === 'true';
   tools: any = {};
   isModalVisible: boolean = false;
-
-
+  isEditModalVisible: boolean = false;
+  selectedUser: any;
+  readonly profileBaseUrl ="https://yara-web.s3.ap-southeast-2.amazonaws.com/img/";
+  
   constructor(
-
+    private deleteService: DeleteService,
     private userDataService: UserDataService,
     private usersService: UsersService
   ) { }
@@ -63,7 +71,7 @@ export class UsersTableComponent implements OnInit {
       _id: user._id,
       internalId: user.internalid,
       firstName: user.firstname,
-      lastName: user.lastName,
+      lastName: user.lastname,
       middleName: user.middlename,
       name: `${user.firstname} ${user.lastname}`,
       email: user.email,
@@ -72,6 +80,8 @@ export class UsersTableComponent implements OnInit {
       addedBy: user.createby,
       status: user.isactive === true ? 'Active' : 'Inactive',
       updatedDate: new Date(user.updatedAt).toLocaleString(),
+      accessLevel: user.accesslevel,
+      profile: `${this.profileBaseUrl}${user.image}`
     }));
     this.totalUsers = response.totalUsers;
   }
@@ -98,13 +108,15 @@ export class UsersTableComponent implements OnInit {
     this.status = status;
     this.usersService.getAllUSers(this.items, this.page, this.status, this.category, "").subscribe((response) => {
       this.updateTableData(response);
-    });  }
+    });
+  }
 
   onCategoryChange(category: string): void {
     this.category = category;
     this.usersService.getAllUSers(this.items, this.page, this.status, this.category, "").subscribe((response) => {
       this.updateTableData(response);
-    });  }
+    });
+  }
 
   get totalPages(): number {
     return Math.ceil(this.totalUsers / this.items);
@@ -116,19 +128,34 @@ export class UsersTableComponent implements OnInit {
     return `Showing ${startIndex} - ${endIndex} of ${this.totalUsers}`;
   }
 
-  openAddUser():void {
+  openAddUser(): void {
     this.isModalVisible = true;
   }
 
-  closeAddUser():void {
+  openEditUser(user: any): void {
+    this.selectedUser = user;
+    this.isEditModalVisible = true;
+  }
+
+  closeAddUser(): void {
     this.isModalVisible = false;
+  }
+
+  closeEditUser(): void {
+    this.isEditModalVisible = false;
   }
 
   deleteUser(userId: string): void {
     if (confirm(`Are you sure you want to delete User ${userId} this action cannot be undone`)) {
-      console.log('ok!');
+      this.deleteService.deleteUser(userId).subscribe((response) => {
+        if (response.message) {
+          this.usersService.getAllUSers(this.items, this.page, this.filter, this.category, "").subscribe((response) => {
+            this.updateTableData(response);
+          });
+        } else {
+          alert('error occurred!');
+        }
+      });
     }
   }
-
-
 }

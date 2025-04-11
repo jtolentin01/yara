@@ -1,4 +1,4 @@
-const { connectDB, batches,users } = require("../models/index");
+const { connectDB, batches, users, env } = require("../models/index");
 const mongoose = require("mongoose");
 
 const testDB = async () => {
@@ -22,26 +22,37 @@ const testDB = async () => {
 
 
     // NEW BATCH
-    const newUser = await users.create({
-      internalid: "44523",
-      username: "jtolentin",
-      firstname: "Niel",
-      lastname: "Tolentin",
-      middlename: "",
-      email: "jtolentin@outdoorequipped.com",
-      password: '123456',
-      image: 'hello.jpg',
-      role: 'Developer',
-      accesslevel: 3,
-      isactive: true,
-      isonline: false,
-      lastonline: '2024-06-25',
-      department: 'IT Dev',
-      requestbatches: 9,
-      createby: "admin",
-      updatedby: "admin",
-    });
-    console.log("New newUser created:", newUser);
+    // const newUser = await users.create({
+    //   internalid: "44523",
+    //   username: "jtolentin",
+    //   firstname: "Niel",
+    //   lastname: "Tolentin",
+    //   middlename: "",
+    //   email: "jtolentin@outdoorequipped.com",
+    //   password: '123456',
+    //   image: 'hello.jpg',
+    //   role: 'Developer',
+    //   accesslevel: 3,
+    //   isactive: true,
+    //   isonline: false,
+    //   lastonline: '2024-06-25',
+    //   department: 'IT Dev',
+    //   requestbatches: 9,
+    //   createby: "admin",
+    //   updatedby: "admin",
+    // });
+    // console.log("New newUser created:", newUser);
+
+    // NEW ENV
+    // const newEnv = await env.create({
+    //   type: "s3",
+    //   data: {
+    //     AWS_S3_REGION: "ap-southeast-2",
+    //     AWS_S3_ACCESS_KEY_ID: "AKIAXGGJDX5ILO7VM6GV",
+    //     AWS_S3_SECRET_ACCESS_KEY: "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",
+    //   },
+    // });
+    // console.log("New env created:", newEnv);
 
 
   } catch (error) {

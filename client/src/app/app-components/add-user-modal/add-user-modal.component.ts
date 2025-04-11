@@ -2,11 +2,12 @@ import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FormSubmissionService } from '../../services/form-submission/form-submission.service';
+import { ToastService, AngularToastifyModule } from 'angular-toastify';
 
 @Component({
   selector: 'app-add-user-modal',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule,AngularToastifyModule],
   templateUrl: './add-user-modal.component.html',
   styleUrl: './add-user-modal.component.css'
 })
@@ -20,6 +21,7 @@ export class AddUserModalComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
+    private _toastService: ToastService,
     private formSubmissionService: FormSubmissionService) { }
 
   ngOnInit(): void {
@@ -46,29 +48,25 @@ export class AddUserModalComponent implements OnInit {
       const userData = this.addUserForm.value;
       this.formSubmissionService.submitNewUser(userData).subscribe(
         (response) => {
-          console.log('User successfully added:', response);
-          alert('Created successfully: Password sent to user email')
-          this.resetForm();
-          this.closeModal();
-          window.location.reload();
+          if(response.success){
+            this._toastService.success('successfully created!');
+            this.resetForm;
+            setTimeout(()=>{window.location.reload()},2000);
+          }
+          else{
+            this._toastService.error(response.message);
+          }
+
         },
         (error) => {
           this.resetForm();
-          console.error('Error adding user:', error);
+          this._toastService.error(error);
         }
       );
     }
   }
 
   private resetForm() {
-    this.addUserForm.reset({
-      email: '',
-      firstName: '',
-      lastName: '',
-      middleName: '',
-      department: '',
-      accessLevel: '',
-      role: ''
-    });
+    this.addUserForm.reset();
   }
 }

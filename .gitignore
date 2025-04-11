@@ -1,3 +1,7 @@
+# Scripts
+manage-inventory-beta.js
+manage.inventory2P-payload.json
+
 # Logs
 logs
 *.log
@@ -128,3 +132,6 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# Ignore cache created with the Angular CLI.
+.angular/

@@ -1,0 +1,29 @@
+/* .bg-image {
+    background-image:
+        url('https://yara-web.s3.ap-southeast-2.amazonaws.com/assets/techno-bg.jpg'),
+        linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5));
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+} */
+
+@keyframes gradient-move {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.moving-gradient {
+    background: linear-gradient(45deg, #282f38, #271c20, #28486e);
+    background-size: 200% 200%;
+    animation: gradient-move 2s ease-in-out infinite;
+}
+

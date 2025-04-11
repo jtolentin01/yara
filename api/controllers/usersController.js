@@ -1,6 +1,8 @@
 const { users } = require("../models/index");
 const { parseUserData } = require("./utils/restapis-utils");
 const { newUserId } = require("./utils/misc-utils");
+const { hashPassword } = require("./utils/encryption-utils");
+const key = require('ckey');
 
 const getAllUsers = async (req, res, next) => {
     try {
@@ -58,30 +60,42 @@ const getUser = async (req, res, next) => {
 }
 
 const addUser = async (req, res, next) => {
-    const user = parseUserData(req);
+    const user = parseUserData(req) || 'n/a';
     const internalId = newUserId();
-    const { firstName, lastName, middleName, email, department, accessLevel, role } = req.body;
+    const { firstName, lastName, middleName, email, department, accessLevel, role, password } = req.body;
+    const hashedpw = password ? hashPassword(password) : hashPassword(key.PW_DEFAULT);
 
     try {
-        await users.create({
-            internalid: internalId,
-            firstname: firstName,
-            lastname: lastName,
-            middlename: middleName,
-            email: email,
-            password: user.id,
-            image: "default.jpg",
-            role: role,
-            accesslevel: parseInt(accessLevel),
-            isactive: true,
-            department: department,
-            createby: `${user.firstname} ${user.lastname}`,
-            updatedby: `${user.firstname} ${user.lastname}`,
-        });
+        const existingEmail = await users.findOne({ email: email });
+        const isValidEmail = email.includes('@channelprecision.com') || email.includes('@outdoorequipped.com');
 
-        res.status(200).json({ success: true });
+        if (existingEmail) {
+            res.status(200).json({ message: 'Email already exists' });
+        }
+        if (!isValidEmail) {
+            res.status(200).json({ message: 'Invalid Company Email' });
+        }
+        else {
+            await users.create({
+                internalid: internalId,
+                firstname: firstName,
+                lastname: lastName,
+                middlename: middleName,
+                email: email,
+                password: hashedpw,
+                image: "default.jpg",
+                role: role,
+                accesslevel: parseInt(accessLevel),
+                isactive: true,
+                department: department,
+                createby: user === 'n/a' ? '' : `${user.firstname} ${user.lastname}`,
+                updatedby: user === 'n/a' ? '' : `${user.firstname} ${user.lastname}`,
+            });
+
+            res.status(200).json({ success: true });
+        }
+
     } catch (error) {
-        next(error);
         res.status(500).json({ success: false, error: 'Error saving user' });
     }
 };
@@ -89,12 +103,10 @@ const addUser = async (req, res, next) => {
 const deleteUser = async (req, res, next) => {
     try {
         const { id } = req.params;
-
         if (!id) {
             return res.status(400).json({ message: 'User ID is required' });
         }
         const result = await users.deleteOne({ internalid: id });
-
         if (result.deletedCount === 0) {
             return res.status(404).json({ message: 'User not found' });
         }
@@ -107,4 +119,80 @@ const deleteUser = async (req, res, next) => {
     }
 }
 
-module.exports = { getAllUsers, getUser, addUser, deleteUser };
+const updateUser = async (req, res, next) => {
+    const user = parseUserData(req);
+    const { firstName, lastName, middleName, department, accessLevel, role, status } = req.body;
+
+    try {
+        await users.findOneAndUpdate(
+            { _id: req.params.id },
+            {
+                $set: {
+                    firstname: firstName,
+                    lastname: lastName,
+                    middlename: middleName,
+                    role: role,
+                    accesslevel: parseInt(accessLevel),
+                    isactive: status === "Active" ? true : false,
+                    department: department,
+                    updatedby: `${user.firstname} ${user.lastname}`,
+                }
+            },
+            { new: true }
+        );
+
+        res.status(200).json({ success: true, message: 'User updated successfully' });
+    } catch (error) {
+        next(error);
+        res.status(500).json({ success: false, error: 'Error updating user' });
+    }
+}
+
+const updateUserPw = async (req, res, next) => {
+    const user = parseUserData(req);
+    const { password } = req.body;
+    const hashedpw = hashPassword(password);
+
+    try {
+        await users.findOneAndUpdate(
+            { _id: req.params.id },
+            {
+                $set: {
+                    password: hashedpw,
+                    updatedby: `${user.firstname} ${user.lastname}`,
+                }
+            },
+            { new: true }
+        );
+
+        res.status(200).json({ success: true, message: 'Password updated successfully' });
+    } catch (error) {
+        next(error);
+        res.status(500).json({ success: false, error: 'Error updating password' });
+    }
+}
+
+const updateUserProfile = async (req, res, next) => {
+    const user = parseUserData(req);
+    const { fileName } = req.body;
+
+    try {
+        await users.findOneAndUpdate(
+            { _id: req.params.id },
+            {
+                $set: {
+                    image: fileName,
+                    updatedby: `${user.firstname} ${user.lastname}`,
+                }
+            },
+            { new: true }
+        );
+        res.status(200).json({ success: true, message: 'profile updated successfully' });
+    } catch (error) {
+        next(error);
+        res.status(500).json({ success: false, error: 'Error updating profile' });
+    }
+}
+
+
+module.exports = { getAllUsers, getUser, addUser, deleteUser, updateUser, updateUserPw, updateUserProfile };

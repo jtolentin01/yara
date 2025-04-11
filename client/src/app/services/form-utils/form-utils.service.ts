@@ -36,8 +36,16 @@ export class FormUtilsService {
       const formData = { ...form.value };
 
       if (formData.productIDs) {
-        formData.productIDs = formData.productIDs.split('\n').filter((id: string) => id.trim() !== '');
+        formData.productIDs = formData.productIDs
+            .split('\n')
+            .map((id: string) => id.trim()) 
+            .filter((id: string) => id !== ''); 
       }
+
+      if (formData.skuAsins) {
+        formData.skuAsins = formData.skuAsins.split('\n').filter((id: string) => id.trim() !== '');
+      }
+
 
       const additionalData = {
         timestamp: new Date().toISOString(),
@@ -49,7 +57,6 @@ export class FormUtilsService {
 
       this.formSubmissionService.submitFormData(formData, additionalData, headers).subscribe(
         response => {
-          console.log('Form submitted successfully', response);
 
           const resetConfig = Object.keys(form.controls).reduce((acc, controlName) => {
             acc[controlName] = '';
@@ -65,5 +72,15 @@ export class FormUtilsService {
       console.log('Form is invalid');
       alert('Form is invalid');
     }
+  }
+  submitFormS1 = (data:any):void => {
+    this.formSubmissionService.submitFormData(data).subscribe(
+      response => {
+        console.log(response);
+      },
+      error => {
+        console.error('Error submitting form', error);
+      }
+    );
   }
 }

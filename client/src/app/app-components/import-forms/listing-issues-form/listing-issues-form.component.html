@@ -1,0 +1,59 @@
+<lib-toastify-toast-container class="text-[0.8rem]" [iconLibrary]="'font-awesome'"></lib-toastify-toast-container>
+<form [formGroup]="importForm" (ngSubmit)="submitForm()" class="bg-gray-900 text-white p-6 rounded-lg shadow-lg">
+    <div class="form-control">
+        <div class="mb-4">
+            <label class="block text-gray-300 text-sm font-bold mb-2" for="importName">
+                Enter Import Name:
+            </label>
+            <input maxlength="20" formControlName="importName"
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline"
+                id="importName" type="text" placeholder="Import Name" />
+        </div>
+
+        <div class="mb-4">
+            <label class="block text-gray-300 text-sm font-bold mb-2">
+                Select Issues
+            </label>
+            <div class="flex flex-col">
+                <div class="flex items-center mb-2">
+                    <input type="checkbox" [checked]="isAllCheckBoxChecked()" (change)="checkAllCheckBox($event)"
+                        class="mr-2" />
+                    <label class="text-gray-300">Select All</label>
+                </div>
+
+                <div *ngFor="let post of posts; let i = index" class="flex items-center mb-2">
+                    <input type="checkbox" [checked]="importForm.get(post.formControlName)?.value"
+                        (change)="onIndividualCheckBoxChange(i, $event)" class="mr-2" [id]="post.formControlName" />
+                    <label [for]="post.formControlName" class="text-gray-300 flex items-center">
+                        {{ post.label }}
+                        <span class="text-xs ml-2" [ngClass]="{
+                'text-green-500': post.severity === 'Low',
+                'text-yellow-500': post.severity === 'Medium',
+                'text-red-500': post.severity === 'High'
+              }">
+                            {{ post.severity }}
+                        </span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <label class="block text-gray-300 text-sm font-bold mb-2" for="marketPlace">
+                Select Marketplace
+            </label>
+            <select id="marketPlace" formControlName="marketPlace" class="w-full bg-gray-800 p-2 rounded text-gray-300">
+                <option value="US">US</option>
+                <option value="CA">Canada</option>
+            </select>
+        </div>
+
+        <div class="flex items-center justify-center">
+            <button
+                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full md:w-full"
+                type="submit">
+                Submit
+            </button>
+        </div>
+    </div>
+</form>

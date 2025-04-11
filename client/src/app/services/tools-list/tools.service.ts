@@ -7,11 +7,19 @@ import { UserDataService } from '../user-data/user-data.service';
   providedIn: 'root'
 })
 export class ToolsService {
-  private apiUrl = '/api/v1/tools/list/all';
+  private baseUrlTools = '/api/v1/tools/list/all';
+  private baseUrlParsers = '/api/v1/tools/list/all/parsers';
+  private baseUrlScrapers = '/api/v1/tools/list/all/scrapers';
   constructor(private http: HttpClient, private userDataService: UserDataService) {}
   public user = this.userDataService.getUserDataFromCookies();
 
   getTools(): Observable<any> {
-    return this.http.get<any>(this.apiUrl);
+    return this.http.get<any>(this.baseUrlTools);
+  }
+  getParsers(): Observable<any> {
+    return this.http.get<any>(this.baseUrlParsers);
+  }
+  getScrapers(): Observable<any> {
+    return this.http.get<any>(this.baseUrlScrapers);
   }
 }

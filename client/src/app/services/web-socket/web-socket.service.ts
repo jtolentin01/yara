@@ -1,29 +1,46 @@
 import { Injectable } from "@angular/core";
 import { io, Socket } from "socket.io-client";
 import { Observable } from "rxjs";
+import { environment } from "../../../environments/environment";
+import { UserDataService } from "../user-data/user-data.service";
 
 @Injectable({
   providedIn: "root",
 })
 export class WebSocketService {
   private socket: Socket;
+  isConnected: boolean = false;
+  readonly URI = environment.production === true ? environment.APP_URI : "http://localhost:5000";
 
-  constructor() {
-    // Connect to your socket.io server
-    this.socket = io('http://localhost:5000');
+  constructor(private userDataService: UserDataService) {
+    this.socket = io(this.URI);
   }
 
-  // Method to connect to socket.io server
+  public user = this.userDataService.getUserDataFromCookies();
   connectSocket() {
-    this.socket.connect();
+    if (this.isConnected === false) {
+      this.socket.connect();
+      this.sendClientDetails();
+      this.isConnected = true;
+    }
+
   }
 
-  // Method to send a message to socket.io server
   sendMessage(message: any) {
     this.socket.emit("message", message);
   }
 
-  // Method to receive messages from socket.io server
+  sendClientDetails() {
+    const details = {
+      internalId: this.user._id,
+      firstname: this.user.firstname,
+      lastname: this.user.lastname,
+      email: this.user.email,
+      department: this.user.department,
+      profile: `https://yara-web.s3.ap-southeast-2.amazonaws.com/img/${this.user.profile}`
+    };
+    this.socket.emit('clientdetails', details)
+  }
   receiveMessages(): Observable<any> {
     return new Observable<any>(observer => {
       this.socket.on("message", (data: any) => {
@@ -35,7 +52,6 @@ export class WebSocketService {
     });
   }
 
-  // Method to disconnect from socket.io server
   disconnectSocket() {
     this.socket.disconnect();
   }
@@ -45,6 +61,16 @@ export class WebSocketService {
       this.socket.on('Updates:', (data) => {
         observer.next(data);
       });
+    });
+  }
+  listenForActiveClient(): Observable<any> {
+    return new Observable<any>(observer => {
+      this.socket.on("activeclient", (data: any) => {
+        observer.next(data);
+      });
+      return () => {
+        this.socket.disconnect();
+      };
     });
   }
 }

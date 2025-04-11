@@ -1,0 +1,63 @@
+<lib-toastify-toast-container class="text-[0.8rem]" [iconLibrary]="'font-awesome'"></lib-toastify-toast-container>
+<form [formGroup]="importForm" (ngSubmit)="submitForm()" class="bg-gray-900 text-white p-6 rounded-lg shadow-lg">
+    <div class="form-control">
+        <div class="mb-4">
+            <label class="block text-gray-300 text-sm font-bold mb-2" for="importName">
+                Import Name
+            </label>
+            <input maxlength="20" formControlName="importName"
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline"
+                id="importName" type="text" placeholder="Enter Import Name">
+        </div>
+        <div class="mb-4">
+            <label class="block text-gray-300 text-sm font-bold mb-2" for="productType">
+                Select Marketplace
+            </label>
+            <select id="productType" formControlName="marketPlace" class="w-full bg-gray-800 p-2 rounded text-gray-300">
+                <option value="US">US</option>
+                <option value="CA">Canada</option>
+            </select>
+        </div>
+        <div class="mb-4">
+            <label class="block text-gray-300 text-sm font-bold mb-2" for="account">
+                Select Account
+            </label>
+            <select id="account" formControlName="account"
+                class="w-full bg-gray-800 text-gray-300 p-2 rounded transition duration-200 ease-in-out disabled:bg-gray-700 disabled:text-gray-400 disabled:cursor-not-allowed">
+                <option value="oe">Outdoor Equipped</option>
+                <option value="wonderfold">Wonderfold</option>
+                <option value="evenflo">Evenflo</option>
+                <option value="fieldsheer">Fieldsheer</option>
+                <option value="sebago">Sebago</option>
+                <!-- <option value="booyah">Booyah</option> -->
+            </select>
+        </div>
+        <div class="mb-6">
+            <label class="block text-gray-300 text-sm font-bold mb-2" for="productIDs">
+                ASIN
+            </label>
+            <textarea formControlName="productIDs"
+                class="shadow appearance-none border rounded w-full h-full py-2 px-3 text-gray-300 leading-tight focus:outline-none focus:shadow-outline bg-gray-800"
+                id="productIDs" placeholder="Enter ASINs by line"></textarea>
+        </div>
+
+        <div class="flex items-center justify-center md:justify-end">
+            <button
+                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full md:w-full"
+                type="submit">
+                Submit
+            </button>
+        </div>
+    </div>
+</form>
+
+
+
+
+
+<!-- <div class="w-full flex justify-center items-center flex-col">
+    <p><b>SKU Extractor</b> tool is under Development</p>
+    <div class="w-44 h-44">
+        <img src="https://cdni.iconscout.com/illustration/premium/thumb/under-construction-site-illustration-download-in-svg-png-gif-file-formats--warning-work-progress-road-sign-pack-tools-equipment-illustrations-3518824.png?f=webp">
+    </div>
+</div> -->

@@ -4,10 +4,10 @@ const extractUniqueValues = (data, property = null) => {
     data.forEach((entry) => {
         if (typeof entry === 'object' && entry !== null && property) {
             const value = entry[property];
-            if (value && value !== 'n/a') {
+            if (value && value !== '-') {
                 uniqueValues.add(value);
             }
-        } else if (!property && entry !== 'n/a') {
+        } else if (!property && entry !== '-') {
             uniqueValues.add(entry);
         }
     });

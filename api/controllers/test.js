@@ -1,10 +1,21 @@
-const testController = async (req, res, next) => {
+const jsonFile = require('./detectwords.json');
+const {words, connectDB} = require('../models/index');
+
+const exec = async () => {
+    await connectDB();
     try {
-        console.log('received!');
-        res.status(200).json({success:true});
+        for (const item of jsonFile) {
+            await words.create({
+                title: item.title,
+                words: item.words,
+                createby: `Unknown`,
+                updatedby: `Unknown`,
+            });
+            console.log(`Inserted document with title: ${item.title}`);
+        }
     } catch (error) {
-        next(error);
+        console.error(error);
     }
 }
 
-module.exports = { testController };
+exec();

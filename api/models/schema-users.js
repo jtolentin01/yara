@@ -72,4 +72,4 @@ schema.set('autoIndex', false);
 schema.index({ _id: 1 });
 
 
-module.exports = mongoose.model("user", schema);
+module.exports = mongoose.model("users", schema);

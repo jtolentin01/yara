@@ -77,7 +77,6 @@ export class UserDataService {
     return null;
   }
 
-  // Set user data in local storage with expiry
   setUserDataInLocalStorage(userData: any, expiryHours: number = 24): void {
     const expiry = new Date();
     expiry.setTime(expiry.getTime() + expiryHours * 60 * 60 * 1000);
@@ -85,12 +84,10 @@ export class UserDataService {
     localStorage.setItem("user", encryptedData);
   }
 
-  // Remove user data from local storage
   removeUserDataFromLocalStorage(): void {
     localStorage.removeItem("user");
   }
 
-  // Get user data from cookies
   getUserDataFromCookies(): any {
     const userDataString = this.getCookie("user");
     if (userDataString) {
@@ -109,7 +106,6 @@ export class UserDataService {
     return null;
   }
 
-  // Set user data in cookies with expiry
   setUserDataInCookies(userData: any, expiryHours: number = 24): void {
     const expiry = new Date();
     expiry.setTime(expiry.getTime() + expiryHours * 60 * 60 * 1000);
@@ -117,7 +113,6 @@ export class UserDataService {
     this.setCookie("user", encryptedData, expiryHours);
   }
 
-  // Check if user data cookie has expired
   isUserDataCookieExpired(): boolean {
     const userDataString = this.getCookie("user");
     if (userDataString) {
@@ -127,13 +122,12 @@ export class UserDataService {
         userData.expiry &&
         new Date(userData.expiry) > new Date()
       ) {
-        return false; // Not expired
+        return false; 
       }
     }
-    return true; // Expired or not found
+    return true; 
   }
 
-  // Remove user data from cookies
   removeUserDataFromCookies(): void {
     this.eraseCookie("user");
   }

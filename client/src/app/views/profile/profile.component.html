@@ -1,0 +1,145 @@
+<lib-toastify-toast-container class="text-[0.8rem]" [iconLibrary]="'font-awesome'"></lib-toastify-toast-container>
+<div class="mx-auto bg-gray-800 shadow-lg rounded-lg p-6">
+    <div class="grid grid-cols-1 md:grid-cols-[25%_75%] gap-4">
+        <div class="text-center md:text-left relative">
+            <div class="relative inline-block">
+                <img class="mx-auto md:mx-0 rounded-full w-32 h-32 border-2 border-blue-500" [src]="profileImg"
+                    alt="Avatar">
+                <label
+                    class="absolute inset-0 flex items-center justify-center bg-gray-700 bg-opacity-50 rounded-full cursor-pointer">
+                    <input type="file" accept="image/jpeg" class="hidden" (change)="onFileSelected($event)">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                </label>
+            </div>
+            <h2 class="text-2xl font-semibold mt-4 text-white">{{ user.firstname }} {{ user.lastname }}</h2>
+            <p class="text-gray-400">{{user.role}}</p>
+            <p class="text-gray-400">Channel Precision Inc.</p>
+            <p class="text-gray-400">{{user.department}}</p>
+
+            <div class="col-span-2 md:col-span-1 mt-4">
+                <button [class.bg-blue-500]="isFileUploaded" [class.bg-gray-500]="!isFileUploaded"
+                    [class.cursor-not-allowed]="!isFileUploaded" [class.hover:bg-gray-600]="!isFileUploaded"
+                    [disabled]="!isFileUploaded" class="text-white px-4 py-1 rounded" (click)="uploadFile()">
+                    Save
+                </button>
+            </div>
+        </div>
+
+        <div class=" bg-gray-800 shadow-lg rounded-lg p-6">
+            <div class="h-[85%]">
+                <div class="border-b border-gray-700 pb-4 mb-4">
+                    <h2 class="text-lg font-semibold text-white">Internal ID {{ user.id }}</h2>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="flex justify-start items-center py-2 border-b border-gray-700">
+                        <h2 class="text-md font-medium text-gray-400">First Name:</h2>
+                        <input disabled type="text" value="{{ user.firstname }}"
+                            class="hover:cursor-not-allowed bg-transparent text-gray-100 text-md rounded-md ml-3 h-full" />
+                    </div>
+                    <div class="flex justify-start items-center py-2 border-b border-gray-700">
+                        <h2 class="text-md font-medium text-gray-400">Last Name:</h2>
+                        <input disabled type="text" value="{{ user.lastname }}"
+                            class="hover:cursor-not-allowed bg-transparent text-gray-100 text-md rounded-md ml-3 h-full" />
+                    </div>
+
+                    <div class="flex justify-start items-center py-2 border-b border-gray-700">
+                        <h2 class="text-md font-medium text-gray-400">Middle Name:</h2>
+                        <input disabled type="text" value="{{ user.middlename }}"
+                            class="hover:cursor-not-allowed bg-transparent text-gray-100 text-md rounded-md ml-3 h-full" />
+                    </div>
+                    <div class="flex justify-start items-center py-2 border-b border-gray-700">
+                        <h2 class="text-md font-medium text-gray-400">Email</h2>
+                        <input disabled type="text" value="{{ user.email }}"
+                            class="hover:cursor-not-allowed bg-transparent text-gray-100 w-[80%] text-md rounded-md ml-3 h-full" />
+                    </div>
+                    <div class="flex justify-start items-center py-2 border-b border-gray-700">
+                        <h2 class="text-md font-medium text-gray-400">Department</h2>
+                        <input disabled type="text" value="{{ user.department }}"
+                            class="hover:cursor-not-allowed bg-transparent text-gray-100 text-md rounded-md ml-3 h-full" />
+                    </div>
+                    <div class="flex justify-start items-center py-2 border-b border-gray-700">
+                        <h2 class="text-md font-medium text-gray-400">Role</h2>
+                        <input disabled type="text" value="{{ user.role }}"
+                            class="hover:cursor-not-allowed bg-transparent text-gray-100 text-md rounded-md ml-3 h-full" />
+                    </div>
+                    <form [formGroup]="updatePwForm" (ngSubmit)="onChangePw()">
+                        <div class="flex justify-start items-center py-2 border-b border-gray-700">
+                            <h2 class="text-md font-medium text-gray-400">Password</h2>
+                            <input formControlName="password" type="password" placeholder="Enter new password"
+                                class="w-[60%] bg-transparent text-gray-100 text-md rounded-md ml-3 h-full" />
+                        </div>
+                        <div class="flex justify-start items-center py-2 mt-3">
+                            <button class=" hover:bg-blue-600 bg-blue-500 text-white px-4 py-1 rounded">
+                                Update
+                            </button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="bg-gray-700 p-6 rounded-lg">
+            <h2 class="text-xl font-semibold mb-4 text-white">Tools Analytics</h2>
+            <div>
+                <h3 class="font-semibold text-white">Listing Loader V2</h3>
+                <div class="w-full bg-gray-600 h-2 rounded">
+                    <div class="bg-blue-500 h-2 rounded" style="width: 70%;"></div>
+                </div>
+            </div>
+            <div class="mt-4">
+                <h3 class="font-semibold text-white">ASIN Checker V2</h3>
+                <div class="w-full bg-gray-600 h-2 rounded">
+                    <div class="bg-blue-500 h-2 rounded" style="width: 50%;"></div>
+                </div>
+            </div>
+            <div class="mt-4">
+                <h3 class="font-semibold text-white">SIPV Scraper</h3>
+                <div class="w-full bg-gray-600 h-2 rounded">
+                    <div class="bg-blue-500 h-2 rounded" style="width: 30%;"></div>
+                </div>
+            </div>
+
+        </div>
+        <div class="bg-gray-700 p-6 rounded-lg">
+            <h2 class="text-xl font-semibold mb-4 text-white">Request Analytics</h2>
+            <div>
+                <h3 class="font-semibold text-white">July 12, 2024</h3>
+                <div class="w-full bg-gray-600 h-2 rounded">
+                    <div class="bg-blue-500 h-2 rounded" style="width: 70%;"></div>
+                </div>
+            </div>
+            <div class="mt-4">
+                <h3 class="font-semibold text-white">July 13, 2024</h3>
+                <div class="w-full bg-gray-600 h-2 rounded">
+                    <div class="bg-blue-500 h-2 rounded" style="width: 50%;"></div>
+                </div>
+            </div>
+            <div class="mt-4">
+                <h3 class="font-semibold text-white">July 14, 2024</h3>
+                <div class="w-full bg-gray-600 h-2 rounded">
+                    <div class="bg-blue-500 h-2 rounded" style="width: 30%;"></div>
+                </div>
+            </div>
+            <div class="mt-4">
+                <h3 class="font-semibold text-white">July 15, 2024</h3>
+                <div class="w-full bg-gray-600 h-2 rounded">
+                    <div class="bg-blue-500 h-2 rounded" style="width: 90%;"></div>
+                </div>
+            </div>
+            <div class="mt-4">
+                <h3 class="font-semibold text-white">July 16, 2024</h3>
+                <div class="w-full bg-gray-600 h-2 rounded">
+                    <div class="bg-blue-500 h-2 rounded" style="width: 40%;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

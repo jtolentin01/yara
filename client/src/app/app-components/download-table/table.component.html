@@ -1,25 +1,41 @@
+<lib-toastify-toast-container class="text-[0.8rem]" [iconLibrary]="'font-awesome'"></lib-toastify-toast-container>
 <div class="w-full h-auto">
+
   <div class="w-full mx-auto bg-[#0f0f0f] rounded-lg shadow overflow-hidden">
     <div class="p-4 flex items-center justify-between">
       <div class="flex space-x-4">
         <input type="text" class="p-1.5 rounded-md bg-[#5f656a] text-[#f1f1f1]" placeholder="Search Import Name"
           [(ngModel)]="searchTerm" (input)="applySearch()">
 
-          <select id="status" [(ngModel)]="status" (change)="onStatusChange(status)" class="bg-[#5f656a] border text-[#f1f1f1] text-sm rounded-lg focus:ring-blue-500 block w-full p-1.5">
-            <option value="">status</option>
-            <option value="3">Completed</option>
-            <option value="2">Failed</option>
-            <option value="1">Ongoing</option>
-          </select>
+        <select id="status" [(ngModel)]="status" (change)="onStatusChange(status)"
+          class="bg-[#5f656a] border text-[#f1f1f1] text-sm rounded-lg focus:ring-blue-500 block w-full p-1.5">
+          <option value="">status</option>
+          <option value="3">Completed</option>
+          <option value="2">Failed</option>
+          <option value="1">Ongoing</option>
+        </select>
 
-          <select id="category" [(ngModel)]="category" (change)="onCategoryChange(category)" class="bg-[#5f656a] border text-[#f1f1f1] text-sm rounded-lg focus:ring-blue-500 block w-full p-1.5">
-            <option value="">Category</option>
-            <option *ngFor="let tool of tools.tools" [value]="tool.subname">{{tool.name}}</option>
-          </select>
-          
+        <select id="category" [(ngModel)]="category" (change)="onCategoryChange(category)"
+          class="bg-[#5f656a] border text-[#f1f1f1] text-sm rounded-lg focus:ring-blue-500 block w-full p-1.5">
+          <option value="">Category</option>
+          <option *ngFor="let tool of tools.tools" [value]="tool.subname">{{tool.name}}</option>
+        </select>
 
       </div>
       <div class="flex space-x-4 items-center">
+        <div class="flex items-center">
+          <div *ngFor="let user of activeUsers" class="relative w-auto flex group">
+            <div class="w-7 h-7 rounded-full border-2 border-blue-400 -ml-2 flex items-center justify-center z-1"
+              style="background-color: white;">
+              <img class="w-6 h-6 rounded-full" src="{{user.profile}}">
+            </div>
+            <div
+              class="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-1 hidden group-hover:block bg-gray-700 text-white text-xs rounded py-1 px-2 z-20 whitespace-nowrap">
+              {{ user.firstname }} {{user.lastname}}
+            </div>
+          </div>
+        </div>
+
         <p class="text-[#ebeae3] text-sm">Show all batches</p>
         <label class="inline-flex items-center cursor-pointer">
           <input type="checkbox" [(ngModel)]="toggleChecked" (change)="setShowAllBatches()" class="sr-only peer">
@@ -60,60 +76,95 @@
             <th class="px-6 py-3 text-left text-xs font-medium text-[#c8c7ba] uppercase tracking-wider">Total Items</th>
             <th class="px-6 py-3 text-left text-xs font-medium text-[#c8c7ba] uppercase tracking-wider">Progress</th>
             <th class="px-6 py-3 text-left text-xs font-medium text-[#c8c7ba] uppercase tracking-wider">Status</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-[#c8c7ba] uppercase tracking-wider">Actions</th>
+            <th class="px-6 py-3 text-center text-xs font-medium text-[#c8c7ba] uppercase tracking-wider">Actions</th>
           </tr>
         </thead>
-        <tbody class="bg-[#0f0f0f] divide-y divide-[#4f504f]">
+        <tbody class="bg-[#0f0f0f] divide-y divide-[#4f504f] ">
           <tr *ngFor="let row of tableData; let i = index"
             [ngClass]="{ 'bg-[#332c28] hover:bg-[#0f0f0f]': row.hidden, 'bg-[#111111] hover:bg-[#1d1e1f]': !row.hidden, 'bg-gray-800': i % 2 === 0, 'bg-gray-700': i % 2 !== 0 }">
             <td class="px-6 py-4 whitespace-no-wrap">
               <input type="checkbox" class="form-checkbox h-4 w-4 text-[#49a5ab] transition duration-150 ease-in-out"
                 [(ngModel)]="row.selected">
             </td>
-            <td class="px-6 py-4 whitespace-no-wrap text-sm font-medium text-[#f1f1f1]">{{row.dateImported}}</td>
-            <td class="px-6 py-4 whitespace-no-wrap text-sm text-[#c8c7ba]">{{row.dateUpdated}}</td>
-            <td class="px-6 py-4 whitespace-no-wrap text-sm text-[#c8c7ba]">{{row.importBy}}</td>
-            <td class="px-6 py-4 whitespace-no-wrap text-sm text-[#c8c7ba]">{{row.batchId}}</td>
-            <td class="px-6 py-4 whitespace-no-wrap text-sm text-[#c8c7ba]">
+            <td class="px-6 py-2.5 whitespace-no-wrap text-sm font-medium text-[#f1f1f1]">{{row.dateImported}}</td>
+            <td class="px-6 py-2.5 whitespace-no-wrap text-sm text-[#c8c7ba]">{{row.dateUpdated}}</td>
+            <td class="px-6 py-2.5 whitespace-nowrap text-sm text-[#c8c7ba]">
+              <div class="flex items-center">
+                <div class="mr-3 flex-shrink-0">
+                  <img 
+                    src="{{row.profile}}" 
+                    class="rounded-full w-5 h-5 object-cover" 
+                    alt="User Image"
+                  />
+                </div>
+                <span>{{ row.importBy }}</span>
+              </div>
+            </td>
+            
+            <td class="px-6 py-2.5 whitespace-no-wrap text-sm text-[#c8c7ba]">{{row.batchId}}</td>
+            <td class="px-6 py-2.5 whitespace-no-wrap text-sm text-[#c8c7ba]">
               <div>{{row.importNameTool}}</div>
               <div>{{row.batchName}}</div>
             </td>
-            <td class="px-6 py-4 whitespace-no-wrap text-sm text-[#c8c7ba]">
+            <td class="px-6 py-2.5 whitespace-no-wrap text-sm text-[#c8c7ba]">
               <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full">{{ row.totalItems }}</span>
             </td>
-            <td class="px-6 py-4 whitespace-no-wrap text-sm text-[#c8c7ba]">
+            <td class="px-6 py-2.5 whitespace-no-wrap text-sm text-[#c8c7ba]">
               <div class="w-full bg-[#4f504f] rounded-full h-2">
                 <div [ngStyle]="{ 'background-color': getProgressBarColor(row.progress), width: row.progress + '%' }"
                   class="h-2 rounded-full"></div>
               </div>
               <span class="text-[0.7rem]">{{ row.progress }}% of {{row.totalItems}} items</span>
             </td>
-            <td class="px-6 py-4 whitespace-no-wrap text-sm text-[#c8c7ba]">
-              <span [ngClass]="row.statusClass" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full">{{
-                row.status }}</span>
+            <td class="px-6 py-2.5 whitespace-no-wrap text-sm text-[#c8c7ba]">
+              <span [ngClass]="row.statusClass" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
+                (click)="row.status === 'View Error' ? viewError(row.info) : null"
+                [ngStyle]="row.status === 'View Error' ? { cursor: 'pointer' } : {}">
+                {{ row.status }}
+              </span>
             </td>
-            <td class="px-6 py-4 whitespace-no-wrap text-sm text-[#c8c7ba] flex flex-row items-center justify-center">
-              <div class="cursor-pointer text-[#f1f1f1] hover:text-green-200 px-2 py-1 rounded"
-              [ngClass]="{
+
+            <td class="px-6 py-2.5 whitespace-no-wrap text-sm text-[#c8c7ba] flex flex-row items-center justify-center">
+              <div class="cursor-pointer text-[#f1f1f1] hover:text-green-200 px-2 py-1 rounded" [ngClass]="{
                 'hover:cursor-not-allowed bg-[#5f5e5e] text-[#c8c7ba]': row.progress < 100,
                 'hover:text-green-200': row.progress >= 100
-              }"
-              (click)="downloadResult(row.batchId, row.progress)"
-              [attr.disabled]="row.progress < 100 ? true : null">
-               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                    stroke="currentColor" class="size-6">
-                 <path stroke-linecap="round" stroke-linejoin="round"
-                       d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
-               </svg>
+              }" (click)="downloadResult(row.batchId, row.progress)"
+                [attr.disabled]="row.progress < 100 ? true : null">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                  stroke="currentColor" class="size-6">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                </svg>
               </div>
-           
-              <button (click)="deleteBatch(row.batchId)" class="hover:text-red-400">
+
+              <div class="cursor-pointer text-[#f1f1f1] hover:text-green-200 px-2 py-1 rounded" [ngClass]="{
+                'hover:cursor-not-allowed bg-[#5f5e5e] text-[#c8c7ba]': row.progress < 100,
+                'hover:text-green-200': row.progress >= 100
+              }" (click)="viewResult(row.batchId)"
+                [attr.disabled]="row.progress < 100 ? true : null">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                </svg>                
+              </div>
+
+              <div (click)="resubmitBatch(row.batchId)"
+                class="cursor-pointer text-[#f1f1f1] hover:text-green-200 px-2 py-1 rounded">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                  stroke="currentColor" class="size-6">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+                </svg>
+              </div>
+              <div (click)="deleteBatch(row.batchId)"
+                class="cursor-pointer text-[#f1f1f1] hover:text-green-200 px-2 py-1 rounded">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                   stroke="currentColor" class="size-6">
                   <path stroke-linecap="round" stroke-linejoin="round"
                     d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
                 </svg>
-              </button>
+
+              </div>
             </td>
           </tr>
         </tbody>
@@ -122,7 +173,7 @@
     <div class="p-4 flex justify-between items-center">
       <span class="text-[#f1f1f1] text-sm">Page {{page}} of {{totalPages}}</span>
 
-      <p class="text-[#ebeae3] text-sm" >{{getPaginationInfo()}}</p>
+      <p class="text-[#ebeae3] text-sm">{{getPaginationInfo()}}</p>
       <div class="flex flex-row justify-center items-center">
         <button class="bg-[#545a5d] text-[#f1f1f1] text-sm p-1.5 px-3 rounded hover:bg-[#1a3757] mr-2"
           (click)="previousPage()" [disabled]="page === 1">Previous</button>

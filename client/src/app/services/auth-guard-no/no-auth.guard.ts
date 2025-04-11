@@ -14,7 +14,7 @@ export class NoAuthGuard implements CanActivate {
   ): boolean | UrlTree {
     const userData = this.cookieService.get('user');
     if (userData) {
-      return this.router.createUrlTree(['/dashboard']); // Redirect to dashboard or other page if authenticated
+      return this.router.createUrlTree(['/dashboard']);
     } else {
       return true;
     }

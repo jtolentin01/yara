@@ -15,6 +15,9 @@ const schema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    toolname: {
+      type: String,
+    },
     totalitems: {
       type: Number,
       default: 0,
@@ -34,6 +37,14 @@ const schema = new mongoose.Schema(
     progress: {
       type: Number,
       default: 0,
+    },
+    resubmitcount: {
+      type: Number,
+      default: 0,
+    },
+    importdata: {
+      type: Array,
+      default: [],
     },
     info: {
       type: Array,

@@ -1,59 +1,162 @@
 <div class="max-w-full mx-auto bg-gray-900 text-white p-4 rounded-lg">
   <header class="flex justify-between items-center mb-8">
-    <h1 class="text-3xl font-bold">Tools Metrics</h1>
+    <div>
+      <h1 class="text-3xl font-bold">Tools Metrics</h1>
+    </div>
+    <p class="text-sm">Welcome {{user.firstname}}, How ya doin?</p>
   </header>
 
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-    <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
-      <h2 class="text-lg font-medium">Total Batches</h2>
-      <p class="text-3xl font-bold">31</p>
-      <p class="text-sm text-gray-300">+3 last day</p>
+    <div class="bg-gray-800 p-6 rounded-lg shadow-lg border-l-2 border-yellow-100 flex justify-between">
+      <div class="w-1/2">
+        <h2 class="text-sm font-medium">Total Batches</h2>
+        <p class="text-3xl font-bold">{{ summary.totalBatches ? summary.totalBatches : '-' }}</p>
+        <p class="text-sm text-green-600">+{{ summary.lastDayBatches }} today</p>
+      </div>
+      <div class="w-1/2">
+        <h2 class="text-sm font-medium">Error Rate</h2>
+        <p class="text-3xl font-bold">{{summary.errorRate ? summary.errorRate : '-' }} %</p>
+        <p class="text-sm text-green-600">{{summary.errorRate < 20 ? 'Stable' : '-' }}</p>
+      </div>
+
     </div>
-    <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
-      <h2 class="text-lg font-medium">Top Department User</h2>
-      <p class="text-3xl font-bold">Listings</p>
-      <p class="text-sm text-gray-300">534 Batches</p>
+    <div class="bg-gray-800 p-6 rounded-lg shadow-lg border-l-2 border-yellow-100">
+      <h2 class="text-sm font-medium">Most used tool</h2>
+      <p class="text-3xl font-bold">{{ summary.mostUsedTool }}
+        <span class="animate-pulse inline-flex items-center justify-center rounded-full w-5 h-5">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+            stroke="currentColor" class="w-6 h-6 text-green-500">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M2.25 18 9 11.25l4.306 4.306a11.95 11.95 0 0 1 5.814-5.518l2.74-1.22m0 0-5.94-2.281m5.94 2.28-2.28 5.941" />
+          </svg>
+        </span>
+
+      </p>
+      <p class="text-sm text-yellow-200">{{ summary.mostUsedToolCount }} Batches</p>
     </div>
-    <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
-      <h2 class="text-lg font-medium">Top User</h2>
-      <p class="text-3xl font-bold">John Doe</p>
-      <p class="text-sm text-gray-300">59 Total Batches</p>
+    <div class="bg-gray-800 p-6 rounded-lg shadow-lg border-l-2 border-yellow-100">
+      <h2 class="text-sm font-medium">Top User</h2>
+      <div class="w-full flex animate-pulse">
+        <div *ngIf="summary.topUser" class="mr-3 mt-2 border-2 border-blue-500 rounded-full flex items-center p-0.5">
+          <img src="{{profileBaseUrl}}{{summary.topUserImg}}" class="rounded-full w-[40px] h-[40px] " width="40px"
+            height="40px" alt="User Image">
+        </div>
+        <div>
+          <p class="text-3xl font-bold">
+            {{ summary.topUser ? summary.topUser : '' }}
+            <ng-container *ngIf="summary.topUser">
+              <span class="bg-blue-500 inline-flex items-center justify-center rounded-full w-5 h-5 ml-0">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M5 13l4 4L19 7" />
+                </svg>
+              </span>
+            </ng-container>
+          </p>
+
+          <p class="text-sm text-gray-300">{{ summary.topUserBatches }} Total Batches</p>
+        </div>
+      </div>
+
     </div>
   </div>
 
-  <div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-8">
-    <h2 class="text-lg font-medium">Total Batches</h2>
-    <p class="text-3xl font-bold">$628.00</p>
-    <!-- Chart placeholder -->
-    <div class="mt-4">
-      <img src="https://via.placeholder.com/600x200" alt="Chart" />
+  <div class="w-full flex flex-col md:flex-row md:space-x-2 space-y-4 md:space-y-0 mb-8">
+    <div class="bg-gray-800 p-6 rounded-lg shadow-lg w-full md:w-[70%]" *ngIf="chartOptions && chartOptions.series">
+      <apx-chart 
+      [series]="chartOptions.series" 
+      [chart]="chartOptions.chart" 
+      [title]="chartOptions.title" 
+      [xaxis]="chartOptions.xaxis" 
+      [yaxis]="chartOptions.yaxis" 
+      [grid]="chartOptions.grid" 
+      [plotOptions]="chartOptions.plotOptions" 
+      [dataLabels]="chartOptions.dataLabels" 
+      [stroke]="chartOptions.stroke" 
+      [fill]="chartOptions.fill"
+      [colors]="chartOptions.colors">
+    </apx-chart>
+    </div>
+    <div class="bg-gray-800 p-6 rounded-lg shadow-lg w-full md:w-[70%]" *ngIf="chartOptions && chartOptions.series">
+      <apx-chart 
+      [series]="chartOptions2.series" 
+      [chart]="chartOptions2.chart" 
+      [title]="chartOptions2.title" 
+      [xaxis]="chartOptions2.xaxis" 
+      [yaxis]="chartOptions2.yaxis" 
+      [grid]="chartOptions2.grid" 
+      [plotOptions]="chartOptions2.plotOptions" 
+      [dataLabels]="chartOptions2.dataLabels" 
+      [stroke]="chartOptions2.stroke" 
+      [colors]="chartOptions2.colors">
+    </apx-chart>
     </div>
   </div>
 
-  <div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-8">
-    <h2 class="text-lg font-medium">Objects</h2>
-    <ul>
-      <li class="flex items-center mb-4">
-        <img src="https://via.placeholder.com/60" alt="Windmills Loft" class="rounded-full mr-4" />
-        <div>
-          <h3 class="text-md font-medium">Windmills Loft</h3>
-          <p class="text-sm text-gray-300">25%</p>
+  <div class="w-full flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
+
+    <div class="bg-gray-800 p-6 rounded-lg shadow-lg w-full md:w-1/2">
+      <h2 class="text-lg font-medium text-white">New Users</h2>
+      <ul class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <li *ngFor="let user of summary.recentlyAddedUser"
+          class="flex items-center justify-around bg-gray-700 p-4 rounded-lg hover:scale-105 transition-transform duration-200 ease-in-out">
+          <div class="flex items-center">
+            <img src="{{profileBaseUrl}}{{user.img}}" class="rounded-full mr-4 w-10 h-10 sm:w-12 sm:h-12"
+              alt="User Image" />
+            <div>
+              <h3 class="text-md font-medium text-white">{{ user.name }}</h3>
+              <p class="text-sm text-gray-300">joined {{ user.joinedAgo }}</p>
+            </div>
+          </div>
+          <div class="ml-auto text-xs text-gray-700 font-medium">
+            <p class="p-1 rounded-lg bg-yellow-100">{{ user.department }}</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="bg-gray-800 p-6 rounded-lg shadow-lg w-full md:w-1/2">
+      <h2 class="text-lg font-medium text-white">Top 5 Users</h2>
+      <ul class="mt-3 space-y-4">
+        <li *ngFor="let user of summary.topFiveUsers"
+          class="flex flex-col sm:flex-row items-center justify-between bg-gray-700 p-2 rounded-lg hover:scale-105 transition-transform duration-300">
+          <div class="flex items-center mb-2 sm:mb-0">
+            <img src="{{profileBaseUrl}}{{user.img}}" class="rounded-full mr-4 w-10 h-10 sm:w-12 sm:h-12"
+              alt="User Image" />
+            <div>
+              <h3 class="text-sm font-medium text-white">{{ user.name }}</h3>
+              <p class="text-xs text-gray-300">{{ user.department }} batches</p>
+            </div>
+          </div>
+          <div class="ml-auto text-xs text-gray-700 font-medium">
+            <p class="px-2 py-1 rounded-lg bg-yellow-100">{{ user.requestBatches }} Batches</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="g-thin bg-gray-800 p-6 rounded-lg shadow-lg w-full md:w-1/4 lg:w-1/4 xl:w-1/4">
+      <h2 class="text-lg font-medium text-white">Announcements 📣</h2>
+      <div class="mt-3 space-y-4">
+        <div class="bg-gray-700 p-4 rounded-lg animate-pulse">
+          <h3 class="text-md font-medium text-white">Release Notes</h3>
+          <p class="text-xs text-gray-300 mb-2">August 8, 2024</p>
+          <p class="text-sm text-gray-300">- Integration Edit Page V2, Edit Page Pricing & Amazon Review V2 (Deployed) ✅
+          </p>
+          <p class="text-sm text-gray-300">- Parent Extractor (Deployed) ✅
+          </p>
+          <p class="text-sm text-gray-300">- Resubmit button and error viewing</p>
         </div>
-      </li>
-      <li class="flex items-center mb-4">
-        <img src="https://via.placeholder.com/60" alt="Seaview Villa" class="rounded-full mr-4" />
-        <div>
-          <h3 class="text-md font-medium">Seaview Villa</h3>
-          <p class="text-sm text-gray-300">18%</p>
+        <div class="bg-gray-700 p-4 rounded-lg">
+          <h3 class="text-md font-medium text-white">Developer Notes</h3>
+          <p class="text-xs text-gray-300 mb-2">Upcoming updates</p>
+          <p class="text-sm text-gray-300">- Amazon Review V2 (Enabled) Under BETA Version</p>
+          <p class="text-sm text-gray-300">- SIPV Scraper (phase 1)</p>
         </div>
-      </li>
-      <li class="flex items-center">
-        <img src="https://via.placeholder.com/60" alt="Family Villa" class="rounded-full mr-4" />
-        <div>
-          <h3 class="text-md font-medium">Family Villa</h3>
-          <p class="text-sm text-gray-300">12%</p>
-        </div>
-      </li>
-    </ul>
+      </div>
+    </div>
+
   </div>
+
+
 </div>
